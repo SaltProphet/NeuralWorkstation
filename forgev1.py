@@ -1383,20 +1383,16 @@ def create_gradio_interface():
                                 if not comments or len(comments.strip()) < 10:
                                     return "❌ [ERROR] Please provide detailed feedback (minimum 10 characters)"
                                 
-                                feedback_data = {
-                                    'comments': comments,
-                                    'role': role,
-                                    'usage': usage,
-                                    'email': email,
-                                    'timestamp': datetime.now().isoformat()
-                                }
+                                # Call the existing save_feedback function
+                                # Note: save_feedback expects (feature, rating, comments, email)
+                                # We'll use role as the feature and add usage to comments
+                                feature = role if role else "General Feedback"
+                                full_comments = f"{comments}\n\nUsage: {usage}" if usage else comments
+                                rating = 5  # Default rating since Phase 4 doesn't have rating slider
                                 
-                                # This would call save_feedback() when implemented
-                                status_msg = "✅ [SUCCESS] Feedback submitted successfully!\n"
-                                status_msg += f"  • Role: {role}\n"
-                                status_msg += f"  • Usage: {usage}\n"
-                                status_msg += "⚠️ [INFO] Backend storage not yet wired"
-                                return status_msg
+                                result = save_feedback(feature, rating, full_comments, email)
+                                return result
+                                
                             except Exception as e:
                                 return f"❌ [ERROR] {str(e)}"
                         
