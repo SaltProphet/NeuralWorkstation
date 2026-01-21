@@ -1,0 +1,33 @@
+# FORGE v1 - Neural Audio Workstation Requirements
+# ================================================
+
+# Core dependencies
+numpy>=1.21.0
+scipy>=1.7.0
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.0
+audioread>=3.0.0
+
+# Deep learning and models
+torch>=2.0.0
+torchaudio>=2.0.0
+
+# Stem separation
+demucs>=4.0.0
+
+# MIDI extraction (optional, may require additional setup)
+basic-pitch>=0.2.0
+
+# Advanced stem separation (optional, requires model checkpoints)
+# audiosep  # Uncomment if using AudioSep
+
+# UI framework
+gradio>=4.0.0
+
+# Video processing (requires FFmpeg system dependency)
+# No Python package needed, but FFmpeg must be installed on system
+
+# Utilities
+tqdm>=4.65.0
