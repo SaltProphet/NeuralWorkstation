@@ -37,6 +37,11 @@ ENV/
 .DS_Store
 Thumbs.db
 
+# Git
+.git/
+.gitignore
+.github/
+
 # Application-specific (generated at runtime)
 runs/
 cache/
@@ -44,19 +49,17 @@ checkpoint/
 output/
 feedback/
 config/
-__pycache__/
 
 # Temporary files
 *.log
 *.tmp
 /tmp/
 
-# Model checkpoints (large files)
+# Model checkpoints (too large for Docker)
 *.pth
 *.pt
 *.ckpt
 
-# Deployment artifacts (keep config files, ignore build artifacts)
-fly.log
-.vercel/
-.render/
+# Documentation (not needed in container)
+*.md
+!README.md
