@@ -203,7 +203,6 @@ def separate_stems_demucs(
         
         cmd = [
             'demucs',
-            '--two-stems=vocals',  # Adjust based on needs
             '-n', model,
             '-o', str(output_dir),
             audio_path
@@ -569,7 +568,6 @@ def extract_midi(
         # Check if basic_pitch is available
         try:
             from basic_pitch.inference import predict
-            from basic_pitch import ICASSP_2022_MODEL_PATH
         except ImportError:
             raise RuntimeError("basic_pitch not available. Install with: pip install basic-pitch")
         
@@ -879,8 +877,16 @@ def create_gradio_interface():
                         demucs_output = gr.JSON(label="Separated Stems")
                         demucs_status = gr.Textbox(label="Status", lines=3)
                 
+                def demucs_wrapper(audio, model, cache):
+                    if not audio:
+                        return {"error": "No audio uploaded"}
+                    try:
+                        return separate_stems_demucs(audio, model, cache)
+                    except Exception as e:
+                        return {"error": str(e)}
+                
                 demucs_btn.click(
-                    fn=lambda audio, model, cache: separate_stems_demucs(audio, model, cache) if audio else {"error": "No audio uploaded"},
+                    fn=demucs_wrapper,
                     inputs=[demucs_audio, demucs_model, demucs_cache],
                     outputs=[demucs_output]
                 )
