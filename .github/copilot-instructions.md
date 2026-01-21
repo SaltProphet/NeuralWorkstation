@@ -72,7 +72,9 @@ python forgev1.py
 ```python
 def separate_stems_demucs(
     audio_path: str,
-    model: str = 'htdemucs'
+    model: str = 'htdemucs',
+    use_cache: bool = True,
+    progress=gr.Progress()
 ) -> Dict[str, str]:
     """
     Separate audio into stems using Demucs with intelligent caching.
@@ -80,6 +82,8 @@ def separate_stems_demucs(
     Args:
         audio_path: Path to input audio file
         model: Demucs model name (htdemucs, htdemucs_ft, etc.)
+        use_cache: Whether to use cached results if available
+        progress: Gradio progress callback for UI updates
     
     Returns:
         Dictionary mapping stem names to output file paths
