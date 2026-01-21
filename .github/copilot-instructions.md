@@ -70,6 +70,8 @@ python forgev1.py
 - Example from codebase:
 
 ```python
+from typing import Dict
+
 def separate_stems_demucs(
     audio_path: str,
     model: str = 'htdemucs',
@@ -152,16 +154,17 @@ def separate_stems_demucs(
   - Windows: Download from https://ffmpeg.org/download.html
 
 ### Python Dependencies
-- Core: numpy, scipy, librosa, soundfile, torch, torchaudio
-- Stem Separation: demucs
-- MIDI: basic-pitch
-- UI: gradio 4.0+
+- Core: numpy>=1.21.0, scipy>=1.7.0, librosa>=0.10.0, soundfile>=0.12.0, torch>=2.0.0, torchaudio>=2.0.0
+- Stem Separation: demucs>=4.0.0
+- MIDI: basic-pitch>=0.2.0
+- UI: gradio>=4.0.0
+- Utilities: tqdm>=4.65.0
 - Optional: audiosep (requires model checkpoints and GPU)
 
 ### Installation Notes
 - PyTorch installation may vary by platform (CPU vs GPU)
 - AudioSep is optional and requires significant additional setup
-- basic-pitch may require additional system dependencies on some platforms
+- basic-pitch may require additional system dependencies on some platforms (libsndfile, ffmpeg, audio codecs)
 
 ## Common Tasks
 
