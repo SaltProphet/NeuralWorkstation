@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FORGE v1 - Neural Audio Workstation: Comprehensive audio processing with stem separation, loop extraction, vocal chopping, MIDI extraction, and video rendering">
+    <meta name="keywords" content="audio processing, stem separation, neural audio, AI audio, music production, Gradio">
+    <meta name="author" content="NeuralWorkstation Team">
+    <title>FORGE v1 - Neural Audio Workstation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .features {
+            margin: 30px 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateX(10px);
+        }
+        
+        .feature h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .feature p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .btn-primary:hover {
+            background: #ffed4e;
+            transform: scale(1.05);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .deployment-options {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .deployment-options h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .deployment-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .deployment-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .deployment-card strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffd700;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 FORGE v1</h1>
+        <p class="subtitle">Neural Audio Workstation</p>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>🎼 Stem Separation</h3>
+                <p>Industry-leading audio separation powered by Demucs. Extract vocals, drums, bass, and other stems with intelligent caching.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🔁 Loop Generation</h3>
+                <p>AI-powered loop extraction with dynamic Aperture control. Rank and extract the best loops from your audio.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎤 Vocal Chops</h3>
+                <p>Generate creative vocal chops with silence, onset, or hybrid detection modes. Perfect for remixes and sample packs.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎹 MIDI Extraction</h3>
+                <p>Convert audio to MIDI using AI-powered transcription. Extract melodies and harmonies for use in any DAW.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🥁 Drum One-Shots</h3>
+                <p>Automatically isolate individual drum hits with transient detection. Build your own sample libraries.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎬 Video Rendering</h3>
+                <p>Create stunning audio visualizations with multiple aspect ratios and styles. Perfect for social media.</p>
+            </div>
+        </div>
+        
+        <div class="cta-buttons">
+            <a href="#run-locally" class="btn btn-primary">🚀 Run Locally</a>
+            <a href="https://github.com/SaltProphet/NeuralWorkstation" class="btn btn-secondary" target="_blank">📖 View on GitHub</a>
+        </div>
+        
+        <div class="deployment-options">
+            <h2>Deploy Anywhere</h2>
+            <p style="margin-bottom: 20px; opacity: 0.9;">FORGE v1 can be deployed on multiple platforms:</p>
+            <div class="deployment-grid">
+                <div class="deployment-card">
+                    <strong>Hugging Face</strong>
+                    <small>Spaces</small>
+                </div>
+                <div class="deployment-card">
+                    <strong>Docker</strong>
+                    <small>Containerized</small>
+                </div>
+                <div class="deployment-card">
+                    <strong>Vercel</strong>
+                    <small>Serverless</small>
+                </div>
+                <div class="deployment-card">
+                    <strong>Render</strong>
+                    <small>Web Service</small>
+                </div>
+                <div class="deployment-card">
+                    <strong>Fly.io</strong>
+                    <small>Edge Deploy</small>
+                </div>
+                <div class="deployment-card">
+                    <strong>Heroku</strong>
+                    <small>Platform</small>
+                </div>
+            </div>
+        </div>
+        
+        <div id="run-locally" style="margin-top: 40px; padding: 20px; background: rgba(0, 0, 0, 0.2); border-radius: 10px;">
+            <h2 style="margin-bottom: 15px;">Quick Start</h2>
+            <pre style="background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 5px; overflow-x: auto; line-height: 1.6;">
+# Clone the repository
+git clone https://github.com/SaltProphet/NeuralWorkstation.git
+cd NeuralWorkstation
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python forgev1.py
+
+# Access at http://localhost:7860
+            </pre>
+        </div>
+        
+        <footer>
+            <p>Built with ❤️ by NeuralWorkstation Team | MIT License</p>
+        </footer>
+    </div>
+</body>
+</html>
