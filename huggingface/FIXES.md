@@ -1,5 +1,26 @@
 # HF Spaces Deployment Fixes
 
+## Recent Updates (2026-01-26)
+
+### Gradio 6.x Compatibility Fix
+
+**Problem**: UI was broken on Hugging Face Spaces due to Gradio 6.x incompatibility.
+
+**Root Causes**:
+1. Version constraint prevented Gradio 6.x: `gradio>=5.11.0,<6.0.0`
+2. Gradio 6.0 moved `theme` and `css` parameters from `Blocks()` to `launch()`
+3. CSS variable was not accessible in the correct scope
+
+**Solutions**:
+1. Updated requirements.txt to allow Gradio 6.x: `gradio>=5.11.0`
+2. Moved `theme` and `css` to `launch()` method
+3. Made `CUSTOM_CSS` a module-level constant for proper scoping
+4. Standardized all documentation to reference `sdk_version: 6.0.0`
+
+**Result**: ✅ UI now renders correctly on HF Spaces with Gradio 6.x
+
+---
+
 ## What Was Changed
 
 This folder contains optimized files for Hugging Face Spaces deployment that address the build timeout issue.
@@ -28,7 +49,7 @@ All dependencies now have upper version bounds to ensure compatibility:
 ```python
 scipy>=1.7.0,<1.12.0
 librosa>=0.10.0,<0.11.0
-gradio>=5.11.0,<6.0.0  # Upgraded to fix security vulnerabilities and HfFolder import error
+gradio>=5.11.0  # Upgraded to fix security vulnerabilities and support Gradio 6.x
 # etc.
 ```
 
@@ -40,7 +61,7 @@ The README.md includes proper frontmatter:
 ```yaml
 ---
 sdk: gradio
-sdk_version: 5.11.0
+sdk_version: 6.0.0
 python_version: "3.10"
 ---
 ```
