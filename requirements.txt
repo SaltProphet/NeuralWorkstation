@@ -30,6 +30,9 @@ basic-pitch>=0.2.0,<0.4.0
 
 # UI framework
 gradio>=4.0.0,<5.0.0
+# Pin huggingface_hub to 0.23.5 for compatibility with Gradio 4.x
+# (HfFolder was removed in huggingface_hub 0.24.0+, breaking Gradio 4.x imports)
+huggingface_hub==0.23.5
 
 # Video processing (requires FFmpeg system dependency)
 # No Python package needed, but FFmpeg must be installed on system
