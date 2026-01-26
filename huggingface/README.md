@@ -8,7 +8,7 @@ sdk_version: 4.44.1
 app_file: app.py
 pinned: false
 license: mit
-python_version: 3.10
+python_version: "3.10"
 ---
 
 # 🎵 FORGE v1 - Neural Audio Workstation
