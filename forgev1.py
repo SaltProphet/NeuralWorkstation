@@ -1458,11 +1458,13 @@ def main():
     app = create_gradio_interface()
     
     # Launch with share=False for local use, share=True for public link
+    # Disable SSR mode to fix "Could not get API info" errors in Gradio 5.x
     app.launch(
         server_name="0.0.0.0",
         server_port=7860,
         share=False,
-        show_error=True
+        show_error=True,
+        ssr_mode=False
     )
 
 
