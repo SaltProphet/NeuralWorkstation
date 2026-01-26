@@ -65,7 +65,7 @@ The `README.md` includes the following HF Spaces configuration:
 title: FORGE v1 - Neural Audio Workstation
 emoji: 🎵
 sdk: gradio
-sdk_version: 4.44.1
+sdk_version: 6.0.0
 app_file: app.py
 python_version: "3.10"
 ```

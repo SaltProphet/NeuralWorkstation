@@ -815,41 +815,35 @@ def save_feedback(
 # GRADIO UI
 # ============================================================================
 
-def create_gradio_interface():
-    """
-    Create the main Gradio interface with FORGE Neural Workstation styling.
-    Implements dark theme with orange accents, multi-phase tabs, and persistent console.
-    """
-    
-    # Custom CSS for FORGE Neural Workstation theme
-    custom_css = """
-    /* ==================== FORGE NEURAL WORKSTATION THEME ==================== */
-    
-    /* Global container styling - Dark theme */
-    .gradio-container {
-        font-family: 'Courier New', 'Consolas', monospace !important;
-        background: #0a0a0a !important;
-    }
-    
-    /* Main content area */
-    .main {
-        background: #0a0a0a !important;
-    }
-    
-    /* Header styling */
-    .forge-header {
-        background: #1a1a1a !important;
-        border-bottom: 2px solid #ff6b35 !important;
-        padding: 20px !important;
-        margin-bottom: 0 !important;
-    }
-    
-    .forge-title {
-        color: #ffffff !important;
-        font-size: 28px !important;
-        font-weight: bold !important;
-        letter-spacing: 2px !important;
-        margin: 0 !important;
+# Custom CSS for FORGE Neural Workstation theme (module-level for reusability)
+CUSTOM_CSS = """
+/* ==================== FORGE NEURAL WORKSTATION THEME ==================== */
+
+/* Global container styling - Dark theme */
+.gradio-container {
+    font-family: 'Courier New', 'Consolas', monospace !important;
+    background: #0a0a0a !important;
+}
+
+/* Main content area */
+.main {
+    background: #0a0a0a !important;
+}
+
+/* Header styling */
+.forge-header {
+    background: #1a1a1a !important;
+    border-bottom: 2px solid #ff6b35 !important;
+    padding: 20px !important;
+    margin-bottom: 0 !important;
+}
+
+.forge-title {
+    color: #ffffff !important;
+    font-size: 28px !important;
+    font-weight: bold !important;
+    letter-spacing: 2px !important;
+    margin: 0 !important;
         font-family: 'Courier New', monospace !important;
     }
     
@@ -1064,13 +1058,19 @@ def create_gradio_interface():
         margin: 10px 0 !important;
     }
     
-    /* Column spacing */
-    .gr-column {
-        padding: 10px !important;
-    }
+/* Column spacing */
+.gr-column {
+    padding: 10px !important;
+}
+"""
+
+def create_gradio_interface():
+    """
+    Create the main Gradio interface with FORGE Neural Workstation styling.
+    Implements dark theme with orange accents, multi-phase tabs, and persistent console.
     """
     
-    with gr.Blocks(css=custom_css, title="FORGE // NEURAL WORKSTATION", theme=gr.themes.Base()) as app:
+    with gr.Blocks(title="FORGE // NEURAL WORKSTATION") as app:
         
         # ==================== HEADER BAR ====================
         with gr.Row(elem_classes="forge-header"):
@@ -1458,11 +1458,16 @@ def main():
     app = create_gradio_interface()
     
     # Launch with share=False for local use, share=True for public link
+    # Disable SSR mode to fix "Could not get API info" errors in Gradio 5.x
+    # In Gradio 6.x, theme and css are passed to launch() instead of Blocks()
     app.launch(
         server_name="0.0.0.0",
         server_port=7860,
         share=False,
-        show_error=True
+        show_error=True,
+        ssr_mode=False,
+        theme=gr.themes.Base(),
+        css=CUSTOM_CSS
     )
 
 
