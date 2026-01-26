@@ -45,7 +45,7 @@ app.launch(
 
 **Manual Fix (if needed):**
 1. Open `forgev1.py` or `huggingface/forgev1.py`
-2. Find the `app.launch()` call (around line 1462)
+2. Find the `app.launch()` call (around line 1463)
 3. Add `ssr_mode=False` as shown above
 4. Restart the application
 

@@ -30,7 +30,7 @@ This is a Gradio 5.x compatibility issue. **The fix is already included in the l
 
 3. **If the line is missing**, add it manually:
    - Open `forgev1.py` (or `huggingface/forgev1.py` for Hugging Face deployment)
-   - Find the `app.launch()` call (around line 1462)
+   - Find the `app.launch()` call (around line 1463)
    - Add `ssr_mode=False` as shown above
    - Save and restart the application
 
