@@ -28,7 +28,7 @@ All dependencies now have upper version bounds to ensure compatibility:
 ```python
 scipy>=1.7.0,<1.12.0
 librosa>=0.10.0,<0.11.0
-gradio>=4.0.0,<5.0.0
+gradio>=5.11.0,<6.0.0  # Upgraded to fix security vulnerabilities and HfFolder import error
 # etc.
 ```
 
@@ -40,7 +40,7 @@ The README.md includes proper frontmatter:
 ```yaml
 ---
 sdk: gradio
-sdk_version: 4.44.1
+sdk_version: 5.11.0
 python_version: "3.10"
 ---
 ```

@@ -29,7 +29,12 @@ basic-pitch>=0.2.0,<0.4.0
 # audiosep  # Uncomment if using AudioSep
 
 # UI framework
-gradio>=4.0.0,<5.0.0
+# Using Gradio 5.11.0+ which has security patches for multiple vulnerabilities:
+# - Fixed: DOS in multipart boundary, arbitrary file deletion, crafted HTTP DOS
+# - Fixed: Insecure FRP communication, race condition, FRP client integrity
+# - Fixed: Blocked Path ACL Bypass (CVE patched in 5.11.0)
+# Note: Gradio 5.x removed dependency on deprecated HfFolder from huggingface_hub
+gradio>=5.11.0,<6.0.0
 
 # Video processing (requires FFmpeg system dependency)
 # No Python package needed, but FFmpeg must be installed on system
