@@ -241,30 +241,34 @@ This innovative control allows you to find different types of loops from the sam
 
 ## Troubleshooting
 
-### Demucs Issues
-- Ensure demucs is installed: `pip install demucs`
-- Check that FFmpeg is available: `ffmpeg -version`
-- Clear cache if results seem incorrect: `rm -rf cache/`
+### Common Issues
 
-### AudioSep Issues
-- AudioSep requires GPU for reasonable performance
-- Download required model checkpoints
-- Falls back gracefully if not available
+#### "Could not get API info" or "No API found" Error
+This is a known Gradio 5.x compatibility issue. **Fix:** The latest version includes `ssr_mode=False` in the launch configuration. If you still see this error, ensure you're using the latest version or see [TROUBLESHOOTING.md](TROUBLESHOOTING.md#api--gradio-issues) for manual fix instructions.
 
-### MIDI Extraction Issues
-- basic_pitch works best on melodic, monophonic audio
-- Polyphonic audio may produce complex MIDI
-- Clean, isolated audio produces best results
+#### FFmpeg Not Found
+Ensure FFmpeg is installed and in your PATH:
+```bash
+# Check if installed
+ffmpeg -version
 
-### Video Rendering Issues
-- Ensure FFmpeg is installed and in PATH
-- Check that input audio file is valid
-- Large files may take time to process
+# Install if needed (Ubuntu/Debian)
+sudo apt-get install ffmpeg
+```
 
-### Memory Issues
+#### Memory Issues
 - Process shorter audio files (under 5 minutes recommended)
+- Use lighter Demucs models (htdemucs instead of mdx_extra_q)
 - Close other applications to free RAM
-- Use lower quality models if needed
+
+### More Help
+
+For comprehensive troubleshooting, see [**TROUBLESHOOTING.md**](TROUBLESHOOTING.md) which covers:
+- API and Gradio issues
+- Installation problems
+- Audio processing issues
+- Deployment issues
+- Performance optimization
 
 ## Advanced Usage
 
