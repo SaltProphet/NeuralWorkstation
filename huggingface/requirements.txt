@@ -1,0 +1,38 @@
+# FORGE v1 - Neural Audio Workstation Requirements
+# ================================================
+# 
+# Installation order optimized for HF Spaces deployment
+# to prevent building from source and ensure binary wheels are used
+
+# Install numpy first with explicit version to ensure wheel availability
+numpy==1.26.4
+
+# Core scientific computing (depends on numpy)
+scipy>=1.7.0,<1.12.0
+
+# Audio processing libraries
+librosa>=0.10.0,<0.11.0
+soundfile>=0.12.0,<0.13.0
+audioread>=3.0.0,<4.0.0
+
+# Deep learning frameworks (these have good wheel support)
+torch>=2.0.0,<2.3.0
+torchaudio>=2.0.0,<2.3.0
+
+# Stem separation (depends on torch)
+demucs>=4.0.0,<4.1.0
+
+# MIDI extraction (optional, may require additional setup)
+basic-pitch>=0.2.0,<0.4.0
+
+# Advanced stem separation (optional, requires model checkpoints)
+# audiosep  # Uncomment if using AudioSep
+
+# UI framework
+gradio>=4.0.0,<5.0.0
+
+# Video processing (requires FFmpeg system dependency)
+# No Python package needed, but FFmpeg must be installed on system
+
+# Utilities
+tqdm>=4.65.0,<5.0.0

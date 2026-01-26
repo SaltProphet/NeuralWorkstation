@@ -16,8 +16,11 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip, setuptools, and wheel to ensure proper binary package handling
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Install Python dependencies with preference for binary packages
+RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 # Copy application files
 COPY forgev1.py .

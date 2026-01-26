@@ -63,6 +63,14 @@ Hugging Face Spaces comes with:
 
 ## Troubleshooting
 
+### Build Timeout / numpy Building from Source
+
+If the deployment times out during numpy installation:
+- The repository has been updated to use pinned numpy versions with prebuilt wheels
+- Ensure you're using Python 3.10 or 3.11 (HF Spaces default)
+- The Dockerfile now upgrades pip first to ensure binary packages are used
+- If using direct requirements.txt (without Docker), pip should prefer binary packages
+
 ### Out of Memory
 - Use a GPU Space with more RAM
 - Process shorter audio clips
