@@ -83,6 +83,10 @@ A unified, comprehensive audio processing workstation combining stem separation,
 - GPU acceleration available for faster processing
 - Caching system speeds up repeated operations on the same audio
 
+## Known Issues & Fixes
+
+✅ **"Could not get API info" Error - FIXED**: This Gradio 5.x compatibility issue has been resolved by setting `ssr_mode=False` in the launch configuration. The latest version includes this fix.
+
 ## License
 
 MIT License - See LICENSE file for details
