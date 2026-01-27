@@ -36,6 +36,17 @@ import gradio as gr
 warnings.filterwarnings('ignore')
 
 # ============================================================================
+# OPTIONAL FEATURES DETECTION
+# ============================================================================
+
+# Check if AudioSep is available
+try:
+    import audiosep
+    AUDIOSEP_AVAILABLE = True
+except ImportError:
+    AUDIOSEP_AVAILABLE = False
+
+# ============================================================================
 # DIRECTORY MANAGEMENT
 # ============================================================================
 
@@ -263,28 +274,41 @@ def separate_stems_audiosep(
     try:
         progress(0, desc="Initializing AudioSep...")
         
-        # Check if audiosep is available
-        try:
-            from audiosep import AudioSep
-            audiosep_available = True
-        except ImportError:
-            audiosep_available = False
+        # Check if audiosep is available using the global flag
+        if not AUDIOSEP_AVAILABLE:
+            raise RuntimeError(
+                "AudioSep is not installed.\n\n"
+                "To install: pip install audiosep\n\n"
+                "Note: AudioSep requires GPU and model checkpoints for optimal performance. "
+                "CPU inference is possible but may be slow."
+            )
         
-        if not audiosep_available:
-            raise RuntimeError("AudioSep not available. Install with: pip install audiosep")
+        # Import AudioSep (we know it's available now)
+        from audiosep import AudioSep
         
-        progress(0.3, desc=f"Separating: {query}...")
+        progress(0.2, desc=f"Loading AudioSep model...")
         
         # Initialize AudioSep model
-        separator = AudioSep(device='cpu')  # Use 'cuda' if GPU available
+        # Use GPU if available, otherwise fall back to CPU
+        try:
+            import torch
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        except:
+            device = 'cpu'
+        
+        separator = AudioSep(device=device)
+        
+        progress(0.4, desc=f"Loading audio file...")
         
         # Load audio
         audio, sr = librosa.load(audio_path, sr=Config.SAMPLE_RATE, mono=False)
         
-        progress(0.5, desc="Processing query...")
+        progress(0.6, desc=f"Separating: {query}...")
         
         # Perform separation
         separated_audio = separator.separate(audio, query)
+        
+        progress(0.8, desc="Saving output...")
         
         # Save output
         output_dir = Path('output/stems')
@@ -296,9 +320,19 @@ def separate_stems_audiosep(
         progress(1.0, desc="AudioSep complete!")
         return str(output_path)
         
+    except RuntimeError as e:
+        # Re-raise RuntimeError (installation/availability issues)
+        raise
     except Exception as e:
-        # Fallback: return original or create silent placeholder
-        raise RuntimeError(f"AudioSep separation failed: {str(e)}\nNote: AudioSep may require GPU and specific model checkpoints")
+        # Other errors (model loading, processing, etc.)
+        raise RuntimeError(
+            f"AudioSep separation failed: {str(e)}\n\n"
+            f"Common issues:\n"
+            f"- Model checkpoints not downloaded (AudioSep downloads on first use)\n"
+            f"- Insufficient memory (try shorter audio clips)\n"
+            f"- Invalid audio format (use WAV, MP3, or FLAC)\n"
+            f"- GPU out of memory (AudioSep is memory-intensive)"
+        )
 
 
 # ============================================================================
@@ -1144,37 +1178,80 @@ def create_gradio_interface():
                     # ==================== PHASE 1.5: AUDIOSEP ====================
                     with gr.Tab("PHASE 1.5: AUDIOSEP"):
                         gr.HTML('<div class="forge-card-header">1.5 ADVANCED STEM EXTRACTION (AUDIOSEP)</div>')
-                        gr.Markdown("*Extract specific audio elements using natural language queries. Requires Phase 1 to be completed.*")
+                        
+                        # Show availability status
+                        if AUDIOSEP_AVAILABLE:
+                            gr.Markdown("*✅ AudioSep is available. Extract specific audio elements using natural language queries.*")
+                        else:
+                            gr.Markdown("""
+                            *⚠️ AudioSep is not installed. This is an optional feature.*
+                            
+                            To enable AudioSep, run: `pip install audiosep`
+                            
+                            Note: AudioSep requires GPU and model checkpoints for best performance.
+                            """)
+                        
+                        gr.HTML('<div class="forge-card-header">1.5.1 AUDIO INPUT</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                audiosep_audio = gr.Audio(
+                                    label="Upload Audio File", 
+                                    type="filepath",
+                                    info="Upload audio file or use output from Phase 1"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">1.5.2 QUERY SETTINGS</div>')
                         
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
                                 audiosep_query = gr.Textbox(
                                     label="Natural Language Query",
-                                    placeholder="e.g., 'heavy kick drum', 'female whisper', 'distorted guitar'",
+                                    placeholder="e.g., 'bass guitar', 'snare drum', 'piano', 'saxophone'",
                                     value="bass guitar",
-                                    lines=2
+                                    lines=2,
+                                    info="Describe the audio element you want to extract"
                                 )
                         
                         with gr.Row():
-                            audiosep_btn = gr.Button("⚡ EXTRACT", variant="primary", size="lg")
+                            audiosep_btn = gr.Button(
+                                "⚡ EXTRACT" if AUDIOSEP_AVAILABLE else "⚠️ AUDIOSEP NOT INSTALLED",
+                                variant="primary" if AUDIOSEP_AVAILABLE else "secondary", 
+                                size="lg",
+                                interactive=AUDIOSEP_AVAILABLE
+                            )
                         
                         with gr.Row():
-                            audiosep_output = gr.Audio(label="Extracted Audio", visible=False)
-                            audiosep_status = gr.Textbox(label="Status", lines=2, interactive=False)
+                            audiosep_output = gr.Audio(label="Extracted Audio", visible=True)
+                            audiosep_status = gr.Textbox(label="Status", lines=3, interactive=False)
                         
-                        def audiosep_wrapper(query):
-                            if not query:
-                                return None, "❌ [ERROR] No query provided"
+                        def audiosep_wrapper(audio, query):
+                            """Wrapper for AudioSep with proper error handling."""
+                            # Check if AudioSep is available
+                            if not AUDIOSEP_AVAILABLE:
+                                return None, "❌ [ERROR] AudioSep is not installed.\n\nInstall with: pip install audiosep\n\nNote: Requires GPU and model checkpoints."
+                            
+                            # Validate inputs
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided. Please upload an audio file."
+                            
+                            if not query or not query.strip():
+                                return None, "❌ [ERROR] No query provided. Please enter a natural language query (e.g., 'bass guitar')."
+                            
                             try:
-                                # Note: This would need the audio from Phase 1
-                                # For now, showing placeholder
-                                return None, f"✅ [INFO] AudioSep extraction queued for: {query}\n⚠️ [WARNING] Requires Phase 1 completion and AudioSep module"
+                                # Call the actual AudioSep function
+                                result_path = separate_stems_audiosep(audio, query.strip())
+                                return result_path, f"✅ [SUCCESS] AudioSep extraction complete!\n\nQuery: {query.strip()}\nOutput: {result_path}"
+                            except RuntimeError as e:
+                                # Handle AudioSep-specific errors
+                                return None, f"❌ [ERROR] AudioSep failed:\n\n{str(e)}"
                             except Exception as e:
-                                return None, f"❌ [ERROR] {str(e)}"
+                                # Handle any other errors
+                                return None, f"❌ [ERROR] Unexpected error:\n\n{str(e)}\n\nPlease check your audio file and query."
                         
                         audiosep_btn.click(
                             fn=audiosep_wrapper,
-                            inputs=[audiosep_query],
+                            inputs=[audiosep_audio, audiosep_query],
                             outputs=[audiosep_output, audiosep_status]
                         )
                     
