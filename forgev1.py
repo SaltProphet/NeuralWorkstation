@@ -1196,9 +1196,8 @@ def create_gradio_interface():
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
                                 audiosep_audio = gr.Audio(
-                                    label="Upload Audio File", 
-                                    type="filepath",
-                                    info="Upload audio file or use output from Phase 1"
+                                    label="Upload Audio File (or use output from Phase 1)", 
+                                    type="filepath"
                                 )
                         
                         gr.HTML('<div class="forge-card-header">1.5.2 QUERY SETTINGS</div>')
@@ -1206,11 +1205,10 @@ def create_gradio_interface():
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
                                 audiosep_query = gr.Textbox(
-                                    label="Natural Language Query",
-                                    placeholder="e.g., 'bass guitar', 'snare drum', 'piano', 'saxophone'",
+                                    label="Natural Language Query (e.g., 'bass guitar', 'snare drum', 'piano', 'saxophone')",
+                                    placeholder="Describe the audio element you want to extract",
                                     value="bass guitar",
-                                    lines=2,
-                                    info="Describe the audio element you want to extract"
+                                    lines=2
                                 )
                         
                         with gr.Row():
