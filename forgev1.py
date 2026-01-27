@@ -1306,169 +1306,290 @@ def create_gradio_interface():
                             outputs=[audiosep_output, audiosep_status]
                         )
                     
-                    # ==================== PHASE 2: EXPORT ====================
-                    with gr.Tab("PHASE 2: EXPORT"):
-                        
-                        # Section 2.1: Stem Export
-                        gr.HTML('<div class="forge-card-header">2.1 STEM EXPORT</div>')
-                        with gr.Row(elem_classes="forge-card"):
-                            with gr.Column():
-                                export_drums = gr.Checkbox(label="☑ Drums", value=True)
-                                export_vocals = gr.Checkbox(label="☑ Vocals", value=True)
-                            with gr.Column():
-                                export_bass = gr.Checkbox(label="☑ Bass", value=True)
-                                export_other = gr.Checkbox(label="☑ Other", value=True)
-                        
-                        # Section 2.2: Loop Generation
-                        gr.HTML('<div class="forge-card-header">2.2 LOOP GENERATION</div>')
-                        with gr.Row(elem_classes="forge-card"):
-                            with gr.Column():
-                                loop_drums = gr.Checkbox(label="☑ Drums", value=True)
-                                loop_vocals = gr.Checkbox(label="☑ Vocals", value=False)
-                            with gr.Column():
-                                loop_bass = gr.Checkbox(label="☑ Bass", value=False)
-                                loop_other = gr.Checkbox(label="☑ Other", value=False)
+                    # ==================== PHASE 2: LOOP GENERATION ====================
+                    with gr.Tab("PHASE 2: LOOP GENERATION"):
+                        gr.HTML('<div class="forge-card-header">2.1 AUDIO INPUT</div>')
                         
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
-                                gr.Markdown("**LOOPS PER STEM**")
-                                loops_per_stem = gr.Slider(minimum=1, maximum=20, value=12, step=1, label="")
+                                loop_audio = gr.Audio(
+                                    label="Upload Audio File (original track or stem from Phase 1)", 
+                                    type="filepath"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">2.2 LOOP SETTINGS</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
-                                gr.Markdown("**APERTURE (VARIETY vs BEST)**")
+                                loop_duration = gr.Slider(
+                                    minimum=Config.MIN_LOOP_DURATION,
+                                    maximum=Config.MAX_LOOP_DURATION,
+                                    value=4.0,
+                                    step=0.5,
+                                    label="Loop Duration (seconds)",
+                                    info="4s = 4 bars at 120 BPM"
+                                )
+                            with gr.Column():
                                 loop_aperture = gr.Slider(
                                     minimum=0.0,
                                     maximum=1.0,
-                                    value=0.75,
+                                    value=0.5,
                                     step=0.05,
-                                    label=""
+                                    label="Aperture",
+                                    info="0.0=energy focused, 1.0=spectral focused"
                                 )
                         
                         with gr.Row(elem_classes="forge-card"):
-                            loop_length_label = gr.Markdown("**LOOP LENGTH (SECS):** 4")
-                            loop_length_values = gr.CheckboxGroup(
-                                choices=["1", "2", "4", "8"],
-                                value=["4"],
-                                label="",
-                                show_label=False
+                            loop_num_loops = gr.Slider(
+                                minimum=1,
+                                maximum=20,
+                                value=10,
+                                step=1,
+                                label="Number of Loops to Extract"
                             )
                         
-                        # Section 2.3: Additional Exports
-                        gr.HTML('<div class="forge-card-header">2.3 ADDITIONAL EXPORTS</div>')
-                        with gr.Row(elem_classes="forge-card"):
-                            with gr.Column():
-                                export_midi = gr.Checkbox(label="☑ MIDI (Basic Pitch)", value=False)
-                                export_drum_oneshots = gr.Checkbox(label="☑ Drum One-Shots", value=False)
-                            with gr.Column():
-                                export_vocal_chops = gr.Checkbox(label="☑ Vocal Chops", value=False)
-                                vocal_chop_mode = gr.Dropdown(
-                                    choices=['Hybrid Mode', 'Silence', 'Onset'],
-                                    value='Hybrid Mode',
-                                    label="Mode"
-                                )
-                        
-                        # Section 2.4: Video Creation
-                        gr.HTML('<div class="forge-card-header">2.4 VIDEO CREATION</div>')
-                        with gr.Row(elem_classes="forge-card"):
-                            with gr.Column(scale=1):
-                                render_promo = gr.Checkbox(label="☑ Render Promo Video", value=False)
-                            with gr.Column(scale=2):
-                                video_template = gr.Dropdown(
-                                    choices=['3-In TheGlitchMood', '16:9', '1:1', '9:16'],
-                                    value='3-In TheGlitchMood',
-                                    label="Template"
-                                )
-                        
-                        with gr.Row(elem_classes="forge-card"):
-                            gr.Markdown("**ADVANCED (LOSSLESS, PAGES)**")
-                            advanced_settings = gr.Textbox(
-                                placeholder="Advanced settings...",
-                                label="",
-                                show_label=False
-                            )
-                        
-                        # Main Export Button
                         with gr.Row():
-                            export_btn = gr.Button("📦 PHASE 2: PACKAGE + EXPORT", variant="primary", size="lg")
+                            loop_extract_btn = gr.Button("🔄 EXTRACT LOOPS", variant="primary", size="lg")
                         
                         with gr.Row():
-                            export_status = gr.Textbox(label="Status", lines=3, interactive=False)
+                            loop_output = gr.File(label="Generated Loops", file_count="multiple")
+                            loop_status = gr.Textbox(label="Status", lines=3, interactive=False)
                         
-                        def export_wrapper(drums, vocals, bass, other, loop_d, loop_v, loop_b, loop_o, 
-                                         loops_count, aperture, midi, drum_shots, vocal_chops, video):
+                        def loop_wrapper(audio, duration, aperture, num_loops):
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided"
                             try:
-                                status_msg = "✅ [SUCCESS] Export configuration saved:\n"
-                                if drums or vocals or bass or other:
-                                    status_msg += f"  • Stems: {sum([drums, vocals, bass, other])} selected\n"
-                                if loop_d or loop_v or loop_b or loop_o:
-                                    status_msg += f"  • Loops: {loops_count} per stem, aperture={aperture}\n"
-                                if midi:
-                                    status_msg += "  • MIDI extraction enabled\n"
-                                if drum_shots:
-                                    status_msg += "  • Drum one-shots enabled\n"
-                                if vocal_chops:
-                                    status_msg += "  • Vocal chops enabled\n"
-                                if video:
-                                    status_msg += "  • Video rendering enabled\n"
-                                status_msg += "⚠️ [INFO] Backend processing not yet wired"
-                                return status_msg
+                                loops = extract_loops(audio, duration, aperture, num_loops)
+                                return loops, f"✅ [SUCCESS] Extracted {len(loops)} loops\nSaved to output/loops/"
                             except Exception as e:
-                                return f"❌ [ERROR] {str(e)}"
+                                return None, f"❌ [ERROR] {str(e)}"
                         
-                        export_btn.click(
-                            fn=export_wrapper,
-                            inputs=[
-                                export_drums, export_vocals, export_bass, export_other,
-                                loop_drums, loop_vocals, loop_bass, loop_other,
-                                loops_per_stem, loop_aperture,
-                                export_midi, export_drum_oneshots, export_vocal_chops, render_promo
-                            ],
-                            outputs=[export_status]
+                        loop_extract_btn.click(
+                            fn=loop_wrapper,
+                            inputs=[loop_audio, loop_duration, loop_aperture, loop_num_loops],
+                            outputs=[loop_output, loop_status]
                         )
                     
-                    # ==================== PHASE 3: DOWNLOAD ====================
-                    with gr.Tab("PHASE 3: DOWNLOAD"):
-                        gr.HTML('<div class="forge-card-header">3.1 SAMPLE LIBRARY</div>')
-                        
-                        gr.Markdown("**Download sample files to test FORGE features**")
+                    # ==================== PHASE 2: VOCAL CHOPS ====================
+                    with gr.Tab("PHASE 2: VOCAL CHOPS"):
+                        gr.HTML('<div class="forge-card-header">2.3 AUDIO INPUT</div>')
                         
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
-                                gr.Markdown("**🎵 DEMO TRACK**")
-                                gr.Markdown("*Full mix - 30 seconds*")
-                                demo_track_btn = gr.Button("📥 Download Demo Track", size="sm")
-                            
-                            with gr.Column():
-                                gr.Markdown("**🎤 VOCAL SAMPLE**")
-                                gr.Markdown("*Acapella - 15 seconds*")
-                                vocal_sample_btn = gr.Button("📥 Download Vocal Sample", size="sm")
-                            
-                            with gr.Column():
-                                gr.Markdown("**🥁 DRUM LOOP**")
-                                gr.Markdown("*Beat - 8 bars*")
-                                drum_loop_btn = gr.Button("📥 Download Drum Loop", size="sm")
+                                chop_audio = gr.Audio(
+                                    label="Upload Vocal Audio (vocals stem from Phase 1 recommended)", 
+                                    type="filepath"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">2.4 CHOP SETTINGS</div>')
                         
                         with gr.Row(elem_classes="forge-card"):
-                            download_status = gr.Textbox(label="Download Status", lines=2, interactive=False)
+                            with gr.Column():
+                                chop_mode = gr.Dropdown(
+                                    choices=['hybrid', 'silence', 'onset'],
+                                    value='hybrid',
+                                    label="Detection Mode",
+                                    info="Hybrid=best for most, Silence=sparse vocals, Onset=rhythmic"
+                                )
+                            with gr.Column():
+                                chop_threshold = gr.Slider(
+                                    minimum=-60,
+                                    maximum=-10,
+                                    value=-40,
+                                    step=1,
+                                    label="Silence Threshold (dB)",
+                                    info="Only used in silence/hybrid modes"
+                                )
                         
-                        def download_sample(sample_type):
-                            return f"✅ [SUCCESS] {sample_type} download initiated\n⚠️ [INFO] Feature not yet implemented"
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                chop_min_duration = gr.Slider(
+                                    minimum=0.05,
+                                    maximum=2.0,
+                                    value=0.1,
+                                    step=0.05,
+                                    label="Min Duration (seconds)"
+                                )
+                            with gr.Column():
+                                chop_max_duration = gr.Slider(
+                                    minimum=0.5,
+                                    maximum=10.0,
+                                    value=3.0,
+                                    step=0.5,
+                                    label="Max Duration (seconds)"
+                                )
                         
-                        demo_track_btn.click(
-                            fn=lambda: download_sample("Demo Track"),
-                            outputs=[download_status]
-                        )
-                        vocal_sample_btn.click(
-                            fn=lambda: download_sample("Vocal Sample"),
-                            outputs=[download_status]
-                        )
-                        drum_loop_btn.click(
-                            fn=lambda: download_sample("Drum Loop"),
-                            outputs=[download_status]
+                        with gr.Row():
+                            chop_btn = gr.Button("✂️ GENERATE CHOPS", variant="primary", size="lg")
+                        
+                        with gr.Row():
+                            chop_output = gr.File(label="Generated Chops", file_count="multiple")
+                            chop_status = gr.Textbox(label="Status", lines=3, interactive=False)
+                        
+                        def chop_wrapper(audio, mode, threshold, min_dur, max_dur):
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided"
+                            try:
+                                chops = generate_vocal_chops(audio, mode, min_dur, max_dur, threshold)
+                                return chops, f"✅ [SUCCESS] Generated {len(chops)} vocal chops\nSaved to output/chops/"
+                            except Exception as e:
+                                return None, f"❌ [ERROR] {str(e)}"
+                        
+                        chop_btn.click(
+                            fn=chop_wrapper,
+                            inputs=[chop_audio, chop_mode, chop_threshold, chop_min_duration, chop_max_duration],
+                            outputs=[chop_output, chop_status]
                         )
                     
-                    # ==================== PHASE 4: FEEDBACK ====================
-                    with gr.Tab("PHASE 4: FEEDBACK"):
-                        gr.HTML('<div class="forge-card-header">4.1 USER FEEDBACK</div>')
+                    # ==================== PHASE 2: MIDI EXTRACTION ====================
+                    with gr.Tab("PHASE 2: MIDI"):
+                        gr.HTML('<div class="forge-card-header">2.5 AUDIO INPUT</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                midi_audio = gr.Audio(
+                                    label="Upload Melodic Audio (vocals, instruments, or stems)", 
+                                    type="filepath"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">2.6 MIDI EXTRACTION</div>')
+                        
+                        gr.Markdown("""
+                        **MIDI extraction works best with:**
+                        - Monophonic audio (single notes, not chords)
+                        - Clean, isolated instruments or vocals
+                        - Clear melodic content
+                        """)
+                        
+                        with gr.Row():
+                            midi_btn = gr.Button("🎹 EXTRACT MIDI", variant="primary", size="lg")
+                        
+                        with gr.Row():
+                            midi_output = gr.File(label="Generated MIDI File")
+                            midi_status = gr.Textbox(label="Status", lines=3, interactive=False)
+                        
+                        def midi_wrapper(audio):
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided"
+                            try:
+                                midi_file = extract_midi(audio)
+                                return midi_file, f"✅ [SUCCESS] MIDI extracted\nSaved to: {midi_file}"
+                            except Exception as e:
+                                return None, f"❌ [ERROR] {str(e)}"
+                        
+                        midi_btn.click(
+                            fn=midi_wrapper,
+                            inputs=[midi_audio],
+                            outputs=[midi_output, midi_status]
+                        )
+                    
+                    # ==================== PHASE 2: DRUM ONE-SHOTS ====================
+                    with gr.Tab("PHASE 2: DRUM ONE-SHOTS"):
+                        gr.HTML('<div class="forge-card-header">2.7 AUDIO INPUT</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                drum_audio = gr.Audio(
+                                    label="Upload Drum Audio (drums stem from Phase 1 recommended)", 
+                                    type="filepath"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">2.8 ONE-SHOT SETTINGS</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                drum_min_duration = gr.Slider(
+                                    minimum=0.01,
+                                    maximum=0.5,
+                                    value=0.05,
+                                    step=0.01,
+                                    label="Min Duration (seconds)",
+                                    info="Shorter = tighter one-shots"
+                                )
+                            with gr.Column():
+                                drum_max_duration = gr.Slider(
+                                    minimum=0.1,
+                                    maximum=3.0,
+                                    value=1.0,
+                                    step=0.1,
+                                    label="Max Duration (seconds)"
+                                )
+                        
+                        with gr.Row():
+                            drum_btn = gr.Button("🥁 EXTRACT ONE-SHOTS", variant="primary", size="lg")
+                        
+                        with gr.Row():
+                            drum_output = gr.File(label="Generated Drum One-Shots", file_count="multiple")
+                            drum_status = gr.Textbox(label="Status", lines=3, interactive=False)
+                        
+                        def drum_wrapper(audio, min_dur, max_dur):
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided"
+                            try:
+                                oneshots = generate_drum_oneshots(audio, min_dur, max_dur)
+                                return oneshots, f"✅ [SUCCESS] Extracted {len(oneshots)} drum one-shots\nSaved to output/drums/"
+                            except Exception as e:
+                                return None, f"❌ [ERROR] {str(e)}"
+                        
+                        drum_btn.click(
+                            fn=drum_wrapper,
+                            inputs=[drum_audio, drum_min_duration, drum_max_duration],
+                            outputs=[drum_output, drum_status]
+                        )
+                    
+                    # ==================== PHASE 3: VIDEO RENDERING ====================
+                    with gr.Tab("PHASE 3: VIDEO"):
+                        gr.HTML('<div class="forge-card-header">3.1 AUDIO INPUT</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                video_audio = gr.Audio(
+                                    label="Upload Audio File for Video", 
+                                    type="filepath"
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">3.2 VIDEO SETTINGS</div>')
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                video_aspect_ratio = gr.Dropdown(
+                                    choices=['16:9', '4:3', '1:1', '9:16'],
+                                    value='16:9',
+                                    label="Aspect Ratio",
+                                    info="16:9=YouTube, 1:1=Instagram, 9:16=TikTok"
+                                )
+                            with gr.Column():
+                                video_viz_type = gr.Dropdown(
+                                    choices=['waveform', 'spectrum', 'both'],
+                                    value='waveform',
+                                    label="Visualization Type"
+                                )
+                        
+                        with gr.Row():
+                            video_btn = gr.Button("🎬 RENDER VIDEO", variant="primary", size="lg")
+                        
+                        with gr.Row():
+                            video_output = gr.File(label="Generated Video")
+                            video_status = gr.Textbox(label="Status", lines=3, interactive=False)
+                        
+                        def video_wrapper(audio, aspect_ratio, viz_type):
+                            if not audio:
+                                return None, "❌ [ERROR] No audio file provided"
+                            try:
+                                video_file = render_video(audio, aspect_ratio, viz_type)
+                                return video_file, f"✅ [SUCCESS] Video rendered\nSaved to: {video_file}"
+                            except Exception as e:
+                                return None, f"❌ [ERROR] {str(e)}"
+                        
+                        video_btn.click(
+                            fn=video_wrapper,
+                            inputs=[video_audio, video_aspect_ratio, video_viz_type],
+                            outputs=[video_output, video_status]
+                        )
+                    
+                    # ==================== FEEDBACK ====================
+                    with gr.Tab("FEEDBACK"):
+                        gr.HTML('<div class="forge-card-header">USER FEEDBACK</div>')
                         
                         gr.Markdown("**Help us improve FORGE by sharing your experience**")
                         
