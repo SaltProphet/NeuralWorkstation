@@ -94,6 +94,8 @@ A unified, comprehensive audio processing workstation combining the power of Nig
    pip install audiosep
    # Note: Requires model checkpoints and GPU recommended
    ```
+   
+   See [OPTIONAL_FEATURES_GUIDE.md](OPTIONAL_FEATURES_GUIDE.md) for detailed instructions on enabling and using optional features.
 
 ## Usage
 
@@ -269,6 +271,10 @@ For comprehensive troubleshooting, see [**TROUBLESHOOTING.md**](TROUBLESHOOTING.
 - Audio processing issues
 - Deployment issues
 - Performance optimization
+
+For information about optional features:
+- [**OPTIONAL_FEATURES_GUIDE.md**](OPTIONAL_FEATURES_GUIDE.md) - Quick start guide for enabling AudioSep and other features
+- [**OPTIONAL_FEATURES_IMPLEMENTATION.md**](OPTIONAL_FEATURES_IMPLEMENTATION.md) - Technical implementation details
 
 ## Advanced Usage
 
