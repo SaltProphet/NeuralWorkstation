@@ -1430,7 +1430,7 @@ def create_gradio_interface():
                             if not audio:
                                 return None, "❌ [ERROR] No audio file provided"
                             try:
-                                chops = generate_vocal_chops(audio, mode, threshold, min_dur, max_dur)
+                                chops = generate_vocal_chops(audio, mode, min_dur, max_dur, threshold)
                                 return chops, f"✅ [SUCCESS] Generated {len(chops)} vocal chops\nSaved to output/chops/"
                             except Exception as e:
                                 return None, f"❌ [ERROR] {str(e)}"
