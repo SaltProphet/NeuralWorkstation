@@ -63,3 +63,15 @@ __pycache__/
 fly.log
 .vercel/
 .render/
+
+# Environment variables (contains API keys and secrets)
+.env
+.env.local
+.env.*.local
+
+# Qdrant local storage
+qdrant_storage/
+.qdrant/
+
+# Agent system generated files
+colab_demo_cell.py

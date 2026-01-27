@@ -2,7 +2,23 @@
 
 A unified, comprehensive audio processing workstation combining the power of Night Pulse and FORGE into a single, intuitive Gradio interface.
 
+**NEW: Autonomous Agent System** - AI-powered conversational agent with intent routing, memory management, and sales capabilities.
+
 ## Features
+
+### 🤖 Autonomous Agent System (NEW)
+
+An intelligent conversational agent with:
+- **Intent Classification**: Gatekeeper agent routes queries (sales, support, general, greeting)
+- **LLM Integration**: Powered by Groq API with fallback stubs for offline use
+- **Memory Management**: Qdrant vector database for persistent conversation context
+- **Agent Roles**: Specialized agents (Gatekeeper, Librarian, Closer, Ghost, Logger)
+- **Gradio Demo**: Interactive chat UI with reasoning log visualization
+- **Colab Ready**: One-click deployment to Google Colab with shareable links
+
+See [Autonomous Agent Quick Start](#autonomous-agent-quick-start) below.
+
+---
 
 ### Phase 1: Stem Separation
 - **Demucs Integration**: Industry-leading stem separation with multiple model options
@@ -97,15 +113,106 @@ A unified, comprehensive audio processing workstation combining the power of Nig
    
    See [OPTIONAL_FEATURES_GUIDE.md](OPTIONAL_FEATURES_GUIDE.md) for detailed instructions on enabling and using optional features.
 
+4. **Optional: Configure Autonomous Agent System**:
+   
+   Create a `.env` file in the project root:
+   ```bash
+   # Groq API for LLM (get free key from https://console.groq.com)
+   GROQ_API_KEY=your_groq_api_key_here
+   
+   # Qdrant Vector Database (for agent memory)
+   # Option 1: Cloud Qdrant (recommended)
+   QDRANT_URL=https://your-cluster.cloud.qdrant.io:6333
+   QDRANT_API_KEY=your_qdrant_api_key
+   
+   # Option 2: Local Qdrant
+   QDRANT_URL=http://localhost:6333
+   # QDRANT_API_KEY not needed for local
+   ```
+   
+   **Note**: The agent system works without these credentials by using deterministic stubs and in-memory storage.
+
 ## Usage
 
-### Launch the Application
+### Launch the Audio Workstation
 
 ```bash
 python forgev1.py
 ```
 
 The Gradio interface will launch at `http://localhost:7860` (or `http://0.0.0.0:7860`).
+
+### Autonomous Agent Quick Start
+
+#### CLI Demo
+Run the command-line interface for the autonomous agent:
+
+```bash
+python gemini_agentic_system.py
+```
+
+**Features**:
+- Interactive conversational agent
+- Intent classification (sales, support, general, greeting)
+- Works offline with deterministic stubs if no API key is set
+- Shows reasoning log for each interaction
+
+**Example interactions**:
+```
+💬 You: How much does this cost?
+🤖 Agent: [Sales response with pricing]
+
+💬 You: I need help with my account
+🤖 Agent: [Support acknowledgment]
+
+💬 You: Hello!
+🤖 Agent: [Greeting with capabilities]
+```
+
+#### Gradio Chat Demo (Colab)
+Run the interactive Gradio demo in Google Colab:
+
+1. Open the demo file:
+   ```bash
+   python colab_gradio_demo.py
+   ```
+
+2. Copy the displayed Colab cell code
+
+3. Paste into a Google Colab notebook and run
+
+4. Access the shareable Gradio link
+
+**Features**:
+- Two-column interface: Chat + Reasoning Log
+- Real-time intent classification visualization
+- Works in any environment (Colab, local, cloud)
+- Shareable public links via Gradio
+
+#### Using Agent Roles
+
+The system includes specialized agent roles defined in `agent_roles.py`:
+
+- **Gatekeeper**: Intent classification and routing
+- **Librarian**: Knowledge retrieval and summarization
+- **Closer**: Sales and conversion optimization
+- **Ghost**: Input sanitization and validation
+- **Logger**: Event logging and monitoring
+
+Import and use in your own scripts:
+
+```python
+from agent_roles import get_system_prompt, list_available_roles
+from gemini_agentic_system import autonomous_agent_main
+
+# List available roles
+print(list_available_roles())
+
+# Process user input
+result = autonomous_agent_main("How much does your pro plan cost?")
+print(result['response'])
+print(result['reasoning_log'])
+```
 
 ### Quick Start Guide
 
@@ -320,7 +427,9 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 
 ## License
 
-MIT License - see LICENSE file for details
+**RedLight Non-Sale License** - Copyright (c) 2026 SaltProphet
+
+This software is free for personal, educational, and non-commercial use. Commercial use, sale, or sublicensing requires explicit written permission from SaltProphet. See [LICENSE](LICENSE) file for full terms.
 
 ## Credits
 
