@@ -98,6 +98,14 @@ class Config:
     MIN_LOOP_DURATION = 1.0  # seconds
     MAX_LOOP_DURATION = 16.0  # seconds
     
+    # Output directories
+    OUTPUT_DIR_STEMS = Path('output/stems')
+    OUTPUT_DIR_LOOPS = Path('output/loops')
+    OUTPUT_DIR_CHOPS = Path('output/chops')
+    OUTPUT_DIR_MIDI = Path('output/midi')
+    OUTPUT_DIR_DRUMS = Path('output/drums')
+    OUTPUT_DIR_VIDEOS = Path('output/videos')
+    
     # Video parameters
     VIDEO_FPS = 30
     VIDEO_BITRATE = '2M'
@@ -123,6 +131,28 @@ class Config:
             with open(config_path, 'r') as f:
                 return json.load(f)
         return {}
+
+
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitize a filename to prevent path traversal and ensure filesystem safety.
+    
+    Args:
+        filename: The filename to sanitize
+        
+    Returns:
+        Sanitized filename safe for filesystem use
+    """
+    # Remove or replace unsafe characters
+    # Keep only alphanumeric, spaces, hyphens, and underscores
+    import re
+    sanitized = re.sub(r'[^\w\s\-]', '_', filename)
+    # Replace multiple spaces/underscores with single underscore
+    sanitized = re.sub(r'[\s_]+', '_', sanitized)
+    # Remove leading/trailing underscores
+    sanitized = sanitized.strip('_')
+    # Limit length to prevent issues
+    return sanitized[:100]
 
 
 def get_audio_hash(audio_path: str) -> str:
@@ -293,15 +323,15 @@ def separate_stems_audiosep(
         try:
             import torch
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        except:
+        except (ImportError, AttributeError) as e:
+            # PyTorch not available or doesn't have CUDA support
             device = 'cpu'
         
         separator = AudioSep(device=device)
         
         progress(0.4, desc=f"Loading audio file...")
         
-        # Load audio - AudioSep typically works with mono, but can handle stereo
-        # We'll load as-is and let AudioSep handle the conversion if needed
+        # Load audio - AudioSep typically works with mono
         audio, sr = librosa.load(audio_path, sr=Config.SAMPLE_RATE, mono=True)
         
         progress(0.6, desc=f"Separating: {query}...")
@@ -318,10 +348,11 @@ def separate_stems_audiosep(
         
         progress(0.8, desc="Saving output...")
         
-        # Save output
-        output_dir = Path('output/stems')
+        # Save output - use Config constant and sanitize query for filename
+        output_dir = Config.OUTPUT_DIR_STEMS
         audio_name = Path(audio_path).stem
-        output_path = output_dir / f"{audio_name}_audiosep_{query.replace(' ', '_')}.wav"
+        safe_query = sanitize_filename(query)
+        output_path = output_dir / f"{audio_name}_audiosep_{safe_query}.wav"
         
         # Handle output shape - AudioSep may return different shapes
         # Ensure it's in the right format for soundfile
@@ -329,8 +360,10 @@ def separate_stems_audiosep(
             # Mono audio
             sf.write(output_path, separated_audio, Config.SAMPLE_RATE)
         elif separated_audio.ndim == 2:
-            # Stereo or multi-channel - transpose if needed
-            # If shape is (channels, samples), transpose to (samples, channels)
+            # Stereo or multi-channel
+            # Note: We assume shape[0] < shape[1] means (channels, samples) format
+            # This heuristic works for most audio (samples >> channels for any reasonable duration)
+            # e.g., 1 second at 44.1kHz = 44100 samples, but channels are typically 1-8
             if separated_audio.shape[0] < separated_audio.shape[1]:
                 separated_audio = separated_audio.T
             sf.write(output_path, separated_audio, Config.SAMPLE_RATE)
