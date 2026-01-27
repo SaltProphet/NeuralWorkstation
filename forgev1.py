@@ -300,13 +300,21 @@ def separate_stems_audiosep(
         
         progress(0.4, desc=f"Loading audio file...")
         
-        # Load audio
-        audio, sr = librosa.load(audio_path, sr=Config.SAMPLE_RATE, mono=False)
+        # Load audio - AudioSep typically works with mono, but can handle stereo
+        # We'll load as-is and let AudioSep handle the conversion if needed
+        audio, sr = librosa.load(audio_path, sr=Config.SAMPLE_RATE, mono=True)
         
         progress(0.6, desc=f"Separating: {query}...")
         
         # Perform separation
         separated_audio = separator.separate(audio, query)
+        
+        # Validate output
+        if separated_audio is None:
+            raise RuntimeError("AudioSep returned None. The query may not match any audio content.")
+        
+        if not isinstance(separated_audio, np.ndarray) or separated_audio.size == 0:
+            raise RuntimeError("AudioSep returned invalid or empty audio data.")
         
         progress(0.8, desc="Saving output...")
         
@@ -315,7 +323,19 @@ def separate_stems_audiosep(
         audio_name = Path(audio_path).stem
         output_path = output_dir / f"{audio_name}_audiosep_{query.replace(' ', '_')}.wav"
         
-        sf.write(output_path, separated_audio.T, Config.SAMPLE_RATE)
+        # Handle output shape - AudioSep may return different shapes
+        # Ensure it's in the right format for soundfile
+        if separated_audio.ndim == 1:
+            # Mono audio
+            sf.write(output_path, separated_audio, Config.SAMPLE_RATE)
+        elif separated_audio.ndim == 2:
+            # Stereo or multi-channel - transpose if needed
+            # If shape is (channels, samples), transpose to (samples, channels)
+            if separated_audio.shape[0] < separated_audio.shape[1]:
+                separated_audio = separated_audio.T
+            sf.write(output_path, separated_audio, Config.SAMPLE_RATE)
+        else:
+            raise RuntimeError(f"Unexpected audio shape from AudioSep: {separated_audio.shape}")
         
         progress(1.0, desc="AudioSep complete!")
         return str(output_path)
@@ -1196,7 +1216,7 @@ def create_gradio_interface():
                         with gr.Row(elem_classes="forge-card"):
                             with gr.Column():
                                 audiosep_audio = gr.Audio(
-                                    label="Upload Audio File (or use output from Phase 1)", 
+                                    label="Upload Audio File (manually select from Phase 1 stems folder if needed)", 
                                     type="filepath"
                                 )
                         
