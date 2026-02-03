@@ -1650,6 +1650,234 @@ def create_gradio_interface():
                             inputs=[feedback_comments, feedback_role, feedback_usage, feedback_email],
                             outputs=[feedback_status]
                         )
+                    
+                    # ==================== BATCH PROCESSING ====================
+                    with gr.Tab("BATCH PROCESSING"):
+                        gr.HTML('<div class="forge-card-header">BATCH PROCESSING</div>')
+                        
+                        gr.Markdown("**Process multiple files at once**")
+                        gr.Markdown("*Upload multiple audio files and apply operations in batch*")
+                        
+                        with gr.Row(elem_classes="forge-card"):
+                            with gr.Column():
+                                batch_files = gr.File(
+                                    label="Upload Audio Files",
+                                    file_count="multiple",
+                                    file_types=["audio"]
+                                )
+                        
+                        gr.HTML('<div class="forge-card-header">SELECT OPERATION</div>')
+                        
+                        with gr.Tabs():
+                            # Batch Stem Separation
+                            with gr.Tab("Stem Separation"):
+                                gr.Markdown("**Batch separate stems from multiple audio files**")
+                                
+                                with gr.Row():
+                                    batch_stem_model = gr.Dropdown(
+                                        choices=Config.DEMUCS_MODELS,
+                                        value='htdemucs',
+                                        label="Demucs Model"
+                                    )
+                                with gr.Row():
+                                    batch_stem_cache = gr.Checkbox(
+                                        label="Use cache",
+                                        value=True
+                                    )
+                                with gr.Row():
+                                    batch_stem_btn = gr.Button(
+                                        "🚀 Run Batch Stem Separation",
+                                        variant="primary"
+                                    )
+                                with gr.Row():
+                                    batch_stem_output = gr.Textbox(
+                                        label="Results",
+                                        lines=10,
+                                        interactive=False
+                                    )
+                            
+                            # Batch Loop Extraction
+                            with gr.Tab("Loop Extraction"):
+                                gr.Markdown("**Batch extract loops from multiple audio files**")
+                                
+                                with gr.Row():
+                                    batch_loop_duration = gr.Slider(
+                                        minimum=1.0,
+                                        maximum=16.0,
+                                        value=4.0,
+                                        label="Loop Duration (seconds)"
+                                    )
+                                with gr.Row():
+                                    batch_loop_aperture = gr.Slider(
+                                        minimum=0.0,
+                                        maximum=1.0,
+                                        value=0.5,
+                                        label="Aperture"
+                                    )
+                                with gr.Row():
+                                    batch_loop_num = gr.Slider(
+                                        minimum=1,
+                                        maximum=20,
+                                        value=5,
+                                        step=1,
+                                        label="Loops per file"
+                                    )
+                                with gr.Row():
+                                    batch_loop_btn = gr.Button(
+                                        "🚀 Run Batch Loop Extraction",
+                                        variant="primary"
+                                    )
+                                with gr.Row():
+                                    batch_loop_output = gr.Textbox(
+                                        label="Results",
+                                        lines=10,
+                                        interactive=False
+                                    )
+                            
+                            # Batch Vocal Chops
+                            with gr.Tab("Vocal Chops"):
+                                gr.Markdown("**Batch generate vocal chops from multiple files**")
+                                
+                                with gr.Row():
+                                    batch_chop_mode = gr.Dropdown(
+                                        choices=['silence', 'onset', 'hybrid'],
+                                        value='onset',
+                                        label="Detection Mode"
+                                    )
+                                with gr.Row():
+                                    batch_chop_min = gr.Slider(
+                                        minimum=0.05,
+                                        maximum=2.0,
+                                        value=0.1,
+                                        label="Min Duration (s)"
+                                    )
+                                    batch_chop_max = gr.Slider(
+                                        minimum=0.1,
+                                        maximum=5.0,
+                                        value=2.0,
+                                        label="Max Duration (s)"
+                                    )
+                                with gr.Row():
+                                    batch_chop_threshold = gr.Slider(
+                                        minimum=0.0,
+                                        maximum=1.0,
+                                        value=0.3,
+                                        label="Threshold"
+                                    )
+                                with gr.Row():
+                                    batch_chop_btn = gr.Button(
+                                        "🚀 Run Batch Chop Generation",
+                                        variant="primary"
+                                    )
+                                with gr.Row():
+                                    batch_chop_output = gr.Textbox(
+                                        label="Results",
+                                        lines=10,
+                                        interactive=False
+                                    )
+                            
+                            # Batch MIDI Extraction
+                            with gr.Tab("MIDI Extraction"):
+                                gr.Markdown("**Batch extract MIDI from multiple audio files**")
+                                
+                                with gr.Row():
+                                    batch_midi_btn = gr.Button(
+                                        "🚀 Run Batch MIDI Extraction",
+                                        variant="primary"
+                                    )
+                                with gr.Row():
+                                    batch_midi_output = gr.Textbox(
+                                        label="Results",
+                                        lines=10,
+                                        interactive=False
+                                    )
+                            
+                            # Batch Drum One-Shots
+                            with gr.Tab("Drum One-Shots"):
+                                gr.Markdown("**Batch generate drum one-shots from multiple files**")
+                                
+                                with gr.Row():
+                                    batch_drum_min = gr.Slider(
+                                        minimum=0.01,
+                                        maximum=0.5,
+                                        value=0.05,
+                                        label="Min Duration (s)"
+                                    )
+                                    batch_drum_max = gr.Slider(
+                                        minimum=0.1,
+                                        maximum=2.0,
+                                        value=0.5,
+                                        label="Max Duration (s)"
+                                    )
+                                with gr.Row():
+                                    batch_drum_fadeout = gr.Checkbox(
+                                        label="Apply fadeout",
+                                        value=True
+                                    )
+                                with gr.Row():
+                                    batch_drum_btn = gr.Button(
+                                        "🚀 Run Batch Drum One-Shot Generation",
+                                        variant="primary"
+                                    )
+                                with gr.Row():
+                                    batch_drum_output = gr.Textbox(
+                                        label="Results",
+                                        lines=10,
+                                        interactive=False
+                                    )
+                        
+                        # Import batch processing functions
+                        from batch_processor import (
+                            batch_separate_stems,
+                            batch_extract_loops,
+                            batch_generate_chops,
+                            batch_extract_midi,
+                            batch_generate_drum_oneshots
+                        )
+                        
+                        # Wire up batch operations
+                        def get_file_paths(files):
+                            if files is None:
+                                return []
+                            return [f.name for f in files]
+                        
+                        batch_stem_btn.click(
+                            fn=lambda files, model, cache: batch_separate_stems(
+                                get_file_paths(files), model, cache
+                            ),
+                            inputs=[batch_files, batch_stem_model, batch_stem_cache],
+                            outputs=[batch_stem_output]
+                        )
+                        
+                        batch_loop_btn.click(
+                            fn=lambda files, duration, aperture, num: batch_extract_loops(
+                                get_file_paths(files), duration, aperture, int(num)
+                            ),
+                            inputs=[batch_files, batch_loop_duration, batch_loop_aperture, batch_loop_num],
+                            outputs=[batch_loop_output]
+                        )
+                        
+                        batch_chop_btn.click(
+                            fn=lambda files, mode, min_d, max_d, thresh: batch_generate_chops(
+                                get_file_paths(files), mode, min_d, max_d, thresh
+                            ),
+                            inputs=[batch_files, batch_chop_mode, batch_chop_min, batch_chop_max, batch_chop_threshold],
+                            outputs=[batch_chop_output]
+                        )
+                        
+                        batch_midi_btn.click(
+                            fn=lambda files: batch_extract_midi(get_file_paths(files)),
+                            inputs=[batch_files],
+                            outputs=[batch_midi_output]
+                        )
+                        
+                        batch_drum_btn.click(
+                            fn=lambda files, min_d, max_d, fadeout: batch_generate_drum_oneshots(
+                                get_file_paths(files), min_d, max_d, fadeout
+                            ),
+                            inputs=[batch_files, batch_drum_min, batch_drum_max, batch_drum_fadeout],
+                            outputs=[batch_drum_output]
+                        )
             
             # Right side: Console + Session Output (30% width)
             with gr.Column(scale=3):
