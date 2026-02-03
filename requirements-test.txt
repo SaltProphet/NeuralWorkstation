@@ -1,0 +1,8 @@
+# Testing dependencies for FORGE v1
+# Add to main requirements.txt or install separately with: pip install -r requirements-test.txt
+
+pytest>=7.0.0,<8.0.0
+pytest-cov>=4.0.0,<5.0.0
+pytest-mock>=3.10.0,<4.0.0
+pytest-xdist>=3.0.0,<4.0.0  # For parallel test execution
+coverage>=7.0.0,<8.0.0
