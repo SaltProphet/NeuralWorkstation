@@ -1,0 +1,4 @@
+# Bandit configuration for security scanning
+[bandit]
+exclude_dirs = ['/tests', '/venv', '/env', '/.venv']
+skips = ['B601', 'B602']  # Skip shell injection checks for intentional subprocess usage
