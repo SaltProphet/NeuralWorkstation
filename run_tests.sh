@@ -41,11 +41,11 @@ print_success() {
 # Function to run tests
 run_tests() {
     local test_type=$1
-    local pytest_args=$2
+    shift  # Remove first argument
     
     print_section "Running $test_type tests"
     
-    if python -m pytest $pytest_args; then
+    if python -m pytest "$@"; then
         print_success "$test_type tests passed!"
         return 0
     else
@@ -67,40 +67,40 @@ fi
 case "${1:-all}" in
     "unit")
         print_section "Unit Tests Only"
-        run_tests "Unit" "tests/unit/ -v -m 'not benchmark'"
+        run_tests "Unit" tests/unit/ -v -m "not benchmark"
         ;;
     
     "integration")
         print_section "Integration Tests Only"
-        run_tests "Integration" "tests/integration/test_workflows.py -v -m 'not benchmark'"
+        run_tests "Integration" tests/integration/test_workflows.py -v -m "not benchmark"
         ;;
     
     "benchmark")
         print_section "Performance Benchmarks"
         print_warning "Benchmark tests may take several minutes to complete..."
-        run_tests "Benchmark" "tests/ -v -m benchmark"
+        run_tests "Benchmark" tests/ -v -m benchmark
         ;;
     
     "speed")
         print_section "Speed Benchmarks"
         print_warning "Speed tests may take several minutes to complete..."
-        run_tests "Speed" "tests/integration/test_speed_benchmarks.py -v -m 'benchmark and not slow'"
+        run_tests "Speed" tests/integration/test_speed_benchmarks.py -v -m "benchmark and not slow"
         ;;
     
     "fast")
         print_section "Fast Tests (excluding slow benchmarks)"
-        run_tests "Fast" "tests/ -v -m 'not slow and not benchmark'"
+        run_tests "Fast" tests/ -v -m "not slow and not benchmark"
         ;;
     
     "performance")
         print_section "Performance Module Tests"
-        run_tests "Performance" "tests/unit/test_performance.py -v"
+        run_tests "Performance" tests/unit/test_performance.py -v
         ;;
     
     "coverage")
         print_section "Test Coverage Report"
         print_warning "This will run all tests and generate coverage reports..."
-        python -m pytest tests/ -v -m 'not benchmark and not slow' --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml
+        python -m pytest tests/ -v -m "not benchmark and not slow" --cov=. --cov-report=term-missing --cov-report=html --cov-report=xml
         print_success "Coverage reports generated:"
         echo "  - Terminal: See above"
         echo "  - HTML: htmlcov/index.html"
@@ -109,13 +109,13 @@ case "${1:-all}" in
     
     "all")
         print_section "Running All Tests (excluding slow benchmarks)"
-        run_tests "All" "tests/ -v -m 'not slow'"
+        run_tests "All" tests/ -v -m "not slow"
         ;;
     
     "full")
         print_section "Running Full Test Suite (including slow benchmarks)"
         print_warning "This will take several minutes to complete..."
-        run_tests "Full" "tests/ -v"
+        run_tests "Full" tests/ -v
         ;;
     
     "help"|"-h"|"--help")
