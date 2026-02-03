@@ -1,0 +1,4 @@
+# Performance optimization dependencies
+# Install with: pip install -r requirements-performance.txt
+
+psutil>=5.9.0

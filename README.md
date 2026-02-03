@@ -59,6 +59,31 @@ A unified, comprehensive audio processing workstation combining the power of Nig
   - Optional email for follow-up
   - All feedback stored as timestamped JSON files
 
+### Batch Processing
+- **Process Multiple Files at Once**: Efficient batch operations
+  - Batch stem separation across multiple audio files
+  - Batch loop extraction with custom parameters
+  - Batch vocal chop generation
+  - Batch MIDI extraction
+  - Batch drum one-shot generation
+  - Progress tracking and JSON reports for each batch
+
+### Performance Optimizations
+- **Enhanced Processing Speed**: Optimized for efficiency
+  - Parallel processing for batch operations
+  - Intelligent cache management with expiration
+  - Configurable quality presets (draft, balanced, high)
+  - Resource monitoring and limits
+  - Memory-mapped audio loading for large files
+
+### REST API
+- **Programmatic Access**: Use FORGE via REST API
+  - FastAPI-based REST endpoints for all operations
+  - OpenAPI/Swagger documentation at `/docs`
+  - API key authentication
+  - File upload and download endpoints
+  - Python client library included
+
 ## Installation
 
 ### Prerequisites
@@ -329,6 +354,79 @@ MIT License - see LICENSE file for details
 - **AudioSep**: AudioSep Team
 - **Gradio**: Gradio Team
 - **FFmpeg**: FFmpeg Project
+
+## Development
+
+### Testing
+
+Run the test suite:
+```bash
+# Install test dependencies
+pip install -r requirements-test.txt
+
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ -v --cov=. --cov-report=html
+
+# Run specific test categories
+pytest tests/unit/ -v          # Unit tests only
+pytest tests/integration/ -v   # Integration tests only
+```
+
+### REST API
+
+Start the API server:
+```bash
+# Install API dependencies
+pip install -r requirements-api.txt
+
+# Start the server
+python api.py
+
+# Or with uvicorn
+uvicorn api:app --host 0.0.0.0 --port 8000
+```
+
+Access API documentation at `http://localhost:8000/docs`
+
+Use the Python client:
+```python
+from api_client_example import ForgeAPIClient
+
+client = ForgeAPIClient()
+result = client.extract_loops("audio.wav", num_loops=5)
+```
+
+### Performance Optimization
+
+Run performance optimizations:
+```bash
+python performance.py
+```
+
+This will:
+- Clean expired cache files
+- Manage cache size limits
+- Display resource statistics
+
+### CI/CD
+
+The project includes automated CI/CD with GitHub Actions:
+- Automated testing on multiple Python versions
+- Code linting and quality checks
+- Security scanning
+- Coverage reporting
+
+### Pre-commit Hooks
+
+Install pre-commit hooks for automatic code quality checks:
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
 
 ## Support
 
