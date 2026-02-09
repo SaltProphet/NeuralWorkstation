@@ -23,8 +23,8 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import gradio as gr
 
-# Import core functions from forgev1
-from forgev1 import (
+# Import core functions from app
+from app import (
     separate_stems_demucs,
     extract_loops,
     generate_vocal_chops,

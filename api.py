@@ -28,7 +28,7 @@ from datetime import datetime
 import os
 
 # Import core functions
-from forgev1 import (
+from app import (
     separate_stems_demucs,
     extract_loops,
     generate_vocal_chops,
@@ -124,17 +124,6 @@ class DrumOneShotRequest(BaseModel):
 class DrumOneShotResponse(BaseModel):
     job_id: str
     oneshots: List[str]
-    message: str
-
-
-class VideoRenderRequest(BaseModel):
-    aspect_ratio: str = Field(default="16:9", description="Aspect ratio")
-    visualization: str = Field(default="waveform", description="Visualization type")
-
-
-class VideoRenderResponse(BaseModel):
-    job_id: str
-    video_file: str
     message: str
 
 
@@ -393,8 +382,7 @@ async def download_file(
         Path('output/loops'),
         Path('output/chops'),
         Path('output/midi'),
-        Path('output/drums'),
-        Path('output/videos')
+        Path('output/drums')
     ]
     
     for directory in search_dirs:
@@ -421,9 +409,7 @@ async def get_config(api_key: APIKey = Depends(get_api_key)):
         "sample_rate": Config.SAMPLE_RATE,
         "hop_length": Config.HOP_LENGTH,
         "n_fft": Config.N_FFT,
-        "demucs_models": Config.DEMUCS_MODELS,
-        "video_fps": Config.VIDEO_FPS,
-        "aspect_ratios": list(Config.ASPECT_RATIOS.keys())
+        "demucs_models": Config.DEMUCS_MODELS
     }
 
 

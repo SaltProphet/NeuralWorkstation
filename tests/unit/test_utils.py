@@ -1,5 +1,5 @@
 """
-Unit tests for utility functions in forgev1.py
+Unit tests for utility functions in app.py
 """
 import pytest
 import numpy as np
@@ -7,10 +7,10 @@ from pathlib import Path
 import sys
 import os
 
-# Add parent directory to path to import forgev1
+# Add parent directory to path to import app
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from forgev1 import (
+from app import (
     sanitize_filename,
     get_audio_hash,
     format_timestamp,

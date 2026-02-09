@@ -27,6 +27,7 @@ import shutil
 import warnings
 import traceback
 import subprocess
+import re
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Tuple, List, Dict, Any
@@ -435,6 +436,7 @@ class FORGEAudioProcessor:
             if progress:
                 progress(0.3, desc=f"Running Demucs ({model})...")
             output_dir = Path('output/stems')
+            output_dir.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
             
             cmd = [
                 'demucs',
@@ -448,29 +450,51 @@ class FORGEAudioProcessor:
             if result.returncode != 0:
                 raise RuntimeError(f"Demucs failed: {result.stderr}")
             
+            # Validate Demucs created expected output directory
+            audio_name = Path(audio_path).stem
+            expected_dir = output_dir / model / audio_name
+            if not expected_dir.exists():
+                raise RuntimeError(
+                    f"Demucs completed but created no output directory. "
+                    f"Expected: {expected_dir}\n"
+                    f"Demucs stdout: {result.stdout}\n"
+                    f"Demucs stderr: {result.stderr}"
+                )
+            
             if progress:
                 progress(0.7, desc="Processing stems...")
             
-            # Find generated stems
-            audio_name = Path(audio_path).stem
+            # Find generated stems (audio_name already defined above)
             stem_dir = output_dir / model / audio_name
             
             stems = {}
-            if stem_dir.exists():
-                for stem_file in stem_dir.glob('*.wav'):
-                    stem_name = stem_file.stem
-                    output_path = output_dir / f"{audio_name}_{stem_name}.wav"
-                    shutil.copy(stem_file, output_path)
-                    stems[stem_name] = str(output_path)
-                    
-                    # Cache the stem
-                    if use_cache:
-                        cache_dir.mkdir(parents=True, exist_ok=True)
-                        cache_path = cache_dir / f"{stem_name}.wav"
-                        shutil.copy(stem_file, cache_path)
+            if not stem_dir.exists():
+                raise RuntimeError(
+                    f"Demucs output directory not found: {stem_dir}\n"
+                    f"This usually means Demucs failed silently. Check FFmpeg is installed for MP3/M4A support."
+                )
+            
+            for stem_file in stem_dir.glob('*.wav'):
+                stem_name = stem_file.stem
+                output_path = output_dir / f"{audio_name}_{stem_name}.wav"
+                shutil.copy(stem_file, output_path)
+                stems[stem_name] = str(output_path)
+                
+                # Cache the stem
+                if use_cache:
+                    cache_dir.mkdir(parents=True, exist_ok=True)
+                    cache_path = cache_dir / f"{stem_name}.wav"
+                    shutil.copy(stem_file, cache_path)
+            
+            if len(stems) == 0:
+                raise RuntimeError(
+                    f"No stems were generated from {stem_dir}. "
+                    f"Demucs may have failed to process the audio file."
+                )
             
             if progress:
-                progress(1.0, desc="Separation complete!")
+                stem_names = ', '.join(stems.keys())
+                progress(1.0, desc=f"✅ {len(stems)} stems separated: {stem_names}")
             return stems
             
         except Exception as e:
@@ -862,91 +886,6 @@ class FORGEAudioProcessor:
 # FORGE VIDEO RENDERER
 # ============================================================================
 
-class FORGEVideoRenderer:
-    """Handles video rendering with audio visualizations."""
-    
-    def __init__(self, config: FORGEConfig = None):
-        """Initialize video renderer with configuration."""
-        self.config = config or FORGEConfig()
-    
-    def render_video(
-        self,
-        audio_path: str,
-        aspect_ratio: str = '16:9',
-        visualization_type: str = 'waveform',
-        progress=None
-    ) -> str:
-        """Render video with audio visualization using FFmpeg."""
-        try:
-            if progress:
-                progress(0, desc="Initializing video renderer...")
-            
-            # Check FFmpeg
-            result = subprocess.run(['which', 'ffmpeg'], capture_output=True, text=True)
-            if result.returncode != 0:
-                raise RuntimeError("FFmpeg not found. Please install FFmpeg")
-            
-            # Get video dimensions
-            width, height = self.config.ASPECT_RATIOS.get(aspect_ratio, (1920, 1080))
-            
-            if progress:
-                progress(0.3, desc=f"Rendering video ({aspect_ratio})...")
-            
-            # Prepare output path
-            output_dir = Path('output/videos')
-            audio_name = Path(audio_path).stem
-            video_path = output_dir / f"{audio_name}_{aspect_ratio.replace(':', 'x')}.mp4"
-            
-            # Build FFmpeg command based on visualization type
-            if visualization_type == 'waveform':
-                filter_complex = (
-                    f"[0:a]showwaves=s={width}x{height}:mode=line:colors=cyan[v]"
-                )
-            elif visualization_type == 'spectrum':
-                filter_complex = (
-                    f"[0:a]showfreqs=s={width}x{height}:mode=line:colors=magenta[v]"
-                )
-            else:  # both
-                half_height = height // 2
-                filter_complex = (
-                    f"[0:a]asplit[a1][a2];"
-                    f"[a1]showwaves=s={width}x{half_height}:mode=line:colors=cyan[v1];"
-                    f"[a2]showfreqs=s={width}x{half_height}:mode=line:colors=magenta[v2];"
-                    f"[v1][v2]vstack[v]"
-                )
-            
-            cmd = [
-                'ffmpeg',
-                '-y',
-                '-i', audio_path,
-                '-filter_complex', filter_complex,
-                '-map', '[v]',
-                '-map', '0:a',
-                '-c:v', 'libx264',
-                '-preset', 'fast',
-                '-b:v', self.config.VIDEO_BITRATE,
-                '-c:a', 'aac',
-                '-b:a', '192k',
-                '-r', str(self.config.VIDEO_FPS),
-                str(video_path)
-            ]
-            
-            if progress:
-                progress(0.5, desc="Processing video...")
-            
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            
-            if result.returncode != 0:
-                raise RuntimeError(f"FFmpeg failed: {result.stderr}")
-            
-            if progress:
-                progress(1.0, desc="Video rendering complete!")
-            return str(video_path)
-            
-        except Exception as e:
-            raise RuntimeError(f"Video rendering failed: {str(e)}\n{traceback.format_exc()}")
-
-
 # ============================================================================
 # FORGE FEEDBACK MANAGER
 # ============================================================================
@@ -998,7 +937,6 @@ class FORGEInterface:
         """Initialize interface components."""
         self.config = FORGEConfig()
         self.processor = FORGEAudioProcessor(self.config)
-        self.renderer = FORGEVideoRenderer(self.config)
     
     def create_interface(self) -> gr.Blocks:
         """Create the main Gradio interface."""
@@ -1063,8 +1001,9 @@ class FORGEInterface:
                                 if not audio:
                                     return {"error": "No audio uploaded"}, "❌ [ERROR] No audio file provided"
                                 try:
-                                    result = self.processor.separate_stems_demucs(audio, model, not cache)
-                                    return result, f"✅ [SUCCESS] Stems separated using {model}"
+                                    result = self.processor.separate_stems_demucs(audio, model, cache)
+                                    stem_list = ', '.join(result.keys()) if result else 'none'
+                                    return result, f"✅ [SUCCESS] {len(result)} stems separated using {model}: {stem_list}"
                                 except Exception as e:
                                     return {"error": str(e)}, f"❌ [ERROR] {str(e)}"
                             
@@ -1238,51 +1177,8 @@ class FORGEInterface:
                                 outputs=[drums_status]
                             )
                         
-                        # ==================== PHASE 3: VIDEO ====================
-                        with gr.Tab("PHASE 3: VIDEO"):
-                            gr.HTML('<div class="forge-card-header">3.1 VIDEO RENDERING</div>')
-                            
-                            with gr.Row(elem_classes="forge-card"):
-                                with gr.Column():
-                                    video_audio = gr.Audio(label="Drag & drop audio for video", type="filepath")
-                            
-                            with gr.Row(elem_classes="forge-card"):
-                                with gr.Column():
-                                    video_aspect = gr.Dropdown(
-                                        choices=list(self.config.ASPECT_RATIOS.keys()),
-                                        value='16:9',
-                                        label="Aspect Ratio"
-                                    )
-                                with gr.Column():
-                                    video_viz = gr.Dropdown(
-                                        choices=['waveform', 'spectrum', 'both'],
-                                        value='waveform',
-                                        label="Visualization"
-                                    )
-                            
-                            with gr.Row():
-                                video_btn = gr.Button("🎬 RENDER VIDEO", variant="primary", size="lg")
-                            
-                            with gr.Row():
-                                video_status = gr.Textbox(label="Status", lines=2, interactive=False)
-                            
-                            def video_wrapper(audio, aspect, viz):
-                                if not audio:
-                                    return "❌ [ERROR] No audio provided"
-                                try:
-                                    video_path = self.renderer.render_video(audio, aspect, viz)
-                                    return f"✅ [SUCCESS] Video rendered to {Path(video_path).name}"
-                                except Exception as e:
-                                    return f"❌ [ERROR] {str(e)}"
-                            
-                            video_btn.click(
-                                fn=video_wrapper,
-                                inputs=[video_audio, video_aspect, video_viz],
-                                outputs=[video_status]
-                            )
-                        
-                        # ==================== PHASE 4: FEEDBACK ====================
-                        with gr.Tab("PHASE 4: FEEDBACK"):
+                        # ==================== PHASE 3: FEEDBACK ====================
+                        with gr.Tab("PHASE 3: FEEDBACK"):
                             gr.HTML('<div class="forge-card-header">4.1 USER FEEDBACK</div>')
                             
                             gr.Markdown("**Help us improve FORGE by sharing your experience**")
@@ -1368,11 +1264,198 @@ class FORGEInterface:
 # MAIN APPLICATION
 # ============================================================================
 
+# ============================================================================
+# WRAPPER FUNCTIONS FOR BACKWARD COMPATIBILITY
+# ============================================================================
+# These functions provide a procedural API that wraps the OOP classes above.
+# Used by tests, batch_processor.py, and api.py for easier function-level access.
+
+_PROCESSOR: Optional[FORGEAudioProcessor] = None
+
+
+def _get_processor() -> FORGEAudioProcessor:
+    """Get or create singleton processor instance."""
+    global _PROCESSOR
+    if _PROCESSOR is None:
+        _PROCESSOR = FORGEAudioProcessor(FORGEConfig())
+    return _PROCESSOR
+
+
+def sanitize_filename(name: str) -> str:
+    """Sanitize file names for safe output paths."""
+    parts = re.split(r"[\\/]+", name)
+    parts = [part for part in parts if part not in ("", ".", "..")]
+    combined = "_".join(parts) if parts else "file"
+    combined = re.sub(r"[^A-Za-z0-9]+", "_", combined)
+    combined = re.sub(r"_+", "_", combined)
+    combined = combined.strip("_")
+    if not combined:
+        combined = "file"
+    return combined[:100]
+
+
+def get_audio_hash(audio_path: str) -> str:
+    """Get stable MD5 hash for an audio file."""
+    return _get_processor()._get_audio_hash(audio_path)
+
+
+def format_timestamp(seconds: float) -> str:
+    """Format seconds as MM:SS.mmm."""
+    return _get_processor()._format_timestamp(seconds)
+
+
+def db_to_amplitude(db: float) -> float:
+    """Convert decibels to amplitude."""
+    return _get_processor()._db_to_amplitude(db)
+
+
+def amplitude_to_db(amplitude: float) -> float:
+    """Convert amplitude to decibels."""
+    return _get_processor()._amplitude_to_db(amplitude)
+
+
+def setup_directories() -> List[str]:
+    """Create required application directories."""
+    return FORGEConfig.setup_directories()
+
+
+def save_config(config_dict: dict, name: str = "default") -> None:
+    """Save configuration to JSON file."""
+    FORGEConfig.save_config(config_dict, name)
+
+
+def load_config(name: str = "default") -> dict:
+    """Load configuration from JSON file."""
+    return FORGEConfig.load_config(name)
+
+
+def separate_stems_demucs(
+    audio_path: str,
+    model: str = "htdemucs",
+    use_cache: bool = True,
+    progress=None,
+) -> Dict[str, str]:
+    """Separate stems with Demucs."""
+    return _get_processor().separate_stems_demucs(
+        audio_path=audio_path,
+        model=model,
+        use_cache=use_cache,
+        progress=progress,
+    )
+
+
+def separate_stems_audiosep(
+    audio_path: str,
+    query: str,
+    progress=None,
+) -> str:
+    """Separate stems with AudioSep."""
+    return _get_processor().separate_stems_audiosep(
+        audio_path=audio_path,
+        query=query,
+        progress=progress,
+    )
+
+
+def extract_loops(
+    audio_path: str,
+    loop_duration: float = 4.0,
+    aperture: float = 0.5,
+    num_loops: int = 10,
+    progress=None,
+) -> List[Dict[str, Any]]:
+    """Extract and rank loops from audio."""
+    return _get_processor().extract_loops(
+        audio_path=audio_path,
+        loop_duration=loop_duration,
+        aperture=aperture,
+        num_loops=num_loops,
+        progress=progress,
+    )
+
+
+def generate_vocal_chops(
+    audio_path: str,
+    mode: str = "onset",
+    min_duration: float = 0.1,
+    max_duration: float = 2.0,
+    threshold: float = 0.3,
+    progress=None,
+) -> List[str]:
+    """Generate vocal chops from audio."""
+    return _get_processor().generate_vocal_chops(
+        audio_path=audio_path,
+        mode=mode,
+        min_duration=min_duration,
+        max_duration=max_duration,
+        threshold=threshold,
+        progress=progress,
+    )
+
+
+def extract_midi(
+    audio_path: str,
+    progress=None,
+) -> str:
+    """Extract MIDI from audio."""
+    return _get_processor().extract_midi(
+        audio_path=audio_path,
+        progress=progress,
+    )
+
+
+def generate_drum_oneshots(
+    audio_path: str,
+    min_duration: float = 0.05,
+    max_duration: float = 1.0,
+    progress=None,
+) -> List[str]:
+    """Generate drum one-shots from audio."""
+    return _get_processor().generate_drum_oneshots(
+        audio_path=audio_path,
+        min_duration=min_duration,
+        max_duration=max_duration,
+        progress=progress,
+    )
+
+
+def render_video(
+    audio_path: str,
+    aspect_ratio: str = "16:9",
+    visualization_type: str = "waveform",
+    progress=None,
+) -> str:
+    """Render video visualization for audio (DEPRECATED - video feature removed)."""
+    raise NotImplementedError(
+        "Video rendering has been removed from FORGE. "
+        "FFmpeg is still available for audio format conversion. "
+        "This function is kept for API compatibility only."
+    )
+
+
+def save_feedback(
+    feature: str,
+    rating: int,
+    comments: str,
+    email: Optional[str] = None,
+) -> str:
+    """Save user feedback to disk."""
+    return FORGEFeedback.save_feedback(feature, rating, comments, email)
+
+
+# Legacy alias for backward compatibility
+Config = FORGEConfig
+
+
+# ============================================================================
+# MAIN ENTRY POINT
+# ============================================================================
+
 def main():
     """Main entry point for FORGE v1 application."""
     
     print("=" * 70)
-    print("FORGE v1 - Neural Audio Workstation (Unified OOP Edition)")
+    print("FORGE v1 - Neural Audio Workstation (Unified Edition)")
     print("=" * 70)
     
     # Setup directories

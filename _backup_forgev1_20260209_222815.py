@@ -11,6 +11,7 @@ from app import (
     FORGEAudioProcessor,
     FORGEConfig,
     FORGEFeedback,
+    FORGEVideoRenderer,
 )
 
 
@@ -173,10 +174,12 @@ def render_video(
     progress=None,
 ) -> str:
     """Render video visualization for audio."""
-    raise NotImplementedError(
-        "Video rendering has been removed from FORGE. "
-        "FFmpeg is still available for audio format conversion. "
-        "This function is kept for compatibility only."
+    renderer = FORGEVideoRenderer(Config())
+    return renderer.render_video(
+        audio_path=audio_path,
+        aspect_ratio=aspect_ratio,
+        visualization_type=visualization_type,
+        progress=progress,
     )
 
 

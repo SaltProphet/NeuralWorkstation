@@ -1,15 +1,15 @@
 """
-Integration tests for complete workflows in forgev1.py
+Integration tests for complete workflows in app.py
 """
 import pytest
 from pathlib import Path
 import sys
 import os
 
-# Add parent directory to path to import forgev1
+# Add parent directory to path to import app
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from forgev1 import (
+from app import (
     extract_loops,
     generate_vocal_chops,
     save_feedback,

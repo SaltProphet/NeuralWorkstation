@@ -20,7 +20,7 @@ python app.py
 ## 📦 Platform Comparison
 
 | Platform | Free Tier | GPU | Best For |
-|----------|-----------|-----|----------|
+| --- | --- | --- | --- |
 | **Hugging Face Spaces** | ✅ Yes | ✅ Yes | ML demos, sharing |
 | **Render** | ✅ Yes | ❌ No | Web apps, APIs |
 | **Fly.io** | ✅ Limited | ❌ No | Global edge |
@@ -54,18 +54,21 @@ docker-compose up -d
 ## ☁️ Cloud Platforms
 
 ### Hugging Face Spaces (Recommended for ML)
+
 ```bash
-# Upload app.py, forgev1.py, requirements.txt
+# Upload app.py, requirements.txt
 # Set SDK: gradio, app_file: app.py
 ```
 
 ### Render
+
 ```bash
 # Connect GitHub repo
 # Auto-deploys using render.yaml
 ```
 
 ### Fly.io
+
 ```bash
 flyctl launch
 flyctl deploy

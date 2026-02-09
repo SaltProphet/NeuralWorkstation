@@ -23,7 +23,7 @@ import soundfile as sf
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from forgev1 import (
+from app import (
     extract_loops,
     generate_vocal_chops,
     extract_midi,

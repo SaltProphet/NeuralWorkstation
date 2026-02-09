@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
       
       - name: Run Pylint
-        run: pylint forgev1.py batch_processor.py performance.py api.py --exit-zero
+        run: pylint app.py batch_processor.py performance.py api.py --exit-zero
         continue-on-error: true
 
   test:
@@ -129,13 +129,13 @@ jobs:
       
       - name: Validate imports
         run: |
-          python -c "import forgev1; print('✅ forgev1 imported successfully')"
+          python -c "import app; print('✅ app imported successfully')"
           python -c "import batch_processor; print('✅ batch_processor imported successfully')"
           python -c "import performance; print('✅ performance imported successfully')"
       
       - name: Check directory structure
         run: |
-          python -c "from forgev1 import setup_directories; setup_directories(); print('✅ Directory setup successful')"
+          python -c "from app import setup_directories; setup_directories(); print('✅ Directory setup successful')"
       
       - name: Run performance optimization
         run: |

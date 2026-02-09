@@ -2,7 +2,6 @@
 Integration tests focused on functionality and output quality.
 """
 import json
-import shutil
 from pathlib import Path
 from typing import Tuple
 
@@ -10,8 +9,9 @@ import numpy as np
 import pytest
 import soundfile as sf
 
-from app import FORGEConfig, FORGEFeedback, FORGEVideoRenderer
-from forgev1 import (
+from app import (
+    FORGEConfig,
+    FORGEFeedback,
     extract_loops,
     generate_drum_oneshots,
     generate_vocal_chops,
@@ -105,8 +105,8 @@ class TestOutputQuality:
 
 
 @pytest.mark.integration
-class TestFeedbackAndVideo:
-    """Validate feedback and optional video output."""
+class TestFeedback:
+    """Validate feedback output."""
 
     def test_feedback_saved_to_json(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
@@ -131,19 +131,3 @@ class TestFeedbackAndVideo:
         assert payload["comments"] == "Looks good"
         assert payload["email"] == "test@example.com"
 
-    @pytest.mark.requires_ffmpeg
-    @pytest.mark.slow
-    def test_video_render_short_audio(self, sample_audio_file, mock_gradio_progress):
-        if shutil.which("ffmpeg") is None:
-            pytest.skip("ffmpeg not available")
-
-        renderer = FORGEVideoRenderer(FORGEConfig())
-        video_path = renderer.render_video(
-            audio_path=sample_audio_file,
-            aspect_ratio="1:1",
-            visualization_type="waveform",
-            progress=mock_gradio_progress,
-        )
-
-        assert Path(video_path).exists()
-        assert Path(video_path).stat().st_size > 0

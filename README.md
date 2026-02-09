@@ -5,12 +5,14 @@ A unified, comprehensive audio processing workstation combining the power of Nig
 ## Features
 
 ### Phase 1: Stem Separation
+
 - **Demucs Integration**: Industry-leading stem separation with multiple model options
   - Support for htdemucs, htdemucs_ft, htdemucs_6s, mdx_extra, and mdx_extra_q
   - Intelligent caching system using MD5 hashing for faster reprocessing
   - Separates audio into vocals, drums, bass, and other stems
 
 ### Phase 1.5: AudioSep (Advanced)
+
 - **Query-Based Extraction**: Use natural language to extract specific instruments
   - Examples: "bass guitar", "snare drum", "piano", "saxophone"
   - Powered by AudioSep AI model (requires additional setup)
@@ -18,6 +20,7 @@ A unified, comprehensive audio processing workstation combining the power of Nig
 ### Phase 2: Audio Processing Tools
 
 #### Loop Generation
+
 - **Intelligent Loop Extraction**: AI-powered loop ranking system
   - RMS energy analysis
   - Onset detection for rhythmic content
@@ -27,6 +30,7 @@ A unified, comprehensive audio processing workstation combining the power of Nig
   - Extract and rank up to 20 loops
 
 #### Vocal Chop Generator
+
 - **Three Detection Modes**:
   - **Silence**: Split based on quiet sections
   - **Onset**: Split based on transient detection
@@ -35,24 +39,20 @@ A unified, comprehensive audio processing workstation combining the power of Nig
 - Perfect for creating sample packs and remixes
 
 #### MIDI Extraction
+
 - **AI-Powered Transcription**: Convert audio to MIDI using basic_pitch
 - Extracts melodies, harmonies, and rhythms
 - Compatible with any DAW
 
 #### Drum One-Shot Generator
+
 - **Transient Detection**: Automatically isolate individual drum hits
 - Configurable duration ranges
 - Apply fade-outs for clean samples
 - Ideal for creating drum sample libraries
 
-### Phase 3: Video Rendering
-- **FFmpeg-Powered Visualization**: Create stunning visualizations
-  - Multiple aspect ratios: 16:9, 4:3, 1:1, 9:16
-  - Visualization types: waveform, spectrum, or combined
-  - High-quality H.264 encoding
-  - Perfect for social media and presentations
-
 ### Feedback System
+
 - **User Feedback Collection**: Help improve FORGE
   - Rate individual features (1-5 stars)
   - Provide detailed comments
@@ -60,6 +60,7 @@ A unified, comprehensive audio processing workstation combining the power of Nig
   - All feedback stored as timestamped JSON files
 
 ### Batch Processing
+
 - **Process Multiple Files at Once**: Efficient batch operations
   - Batch stem separation across multiple audio files
   - Batch loop extraction with custom parameters
@@ -69,6 +70,7 @@ A unified, comprehensive audio processing workstation combining the power of Nig
   - Progress tracking and JSON reports for each batch
 
 ### Performance Optimizations
+
 - **Enhanced Processing Speed**: Optimized for efficiency
   - Parallel processing for batch operations
   - Intelligent cache management with expiration
@@ -77,6 +79,7 @@ A unified, comprehensive audio processing workstation combining the power of Nig
   - Memory-mapped audio loading for large files
 
 ### REST API
+
 - **Programmatic Access**: Use FORGE via REST API
   - FastAPI-based REST endpoints for all operations
   - OpenAPI/Swagger documentation at `/docs`
@@ -89,45 +92,49 @@ A unified, comprehensive audio processing workstation combining the power of Nig
 ### Prerequisites
 
 1. **Python 3.8+**
-2. **FFmpeg** (required for video rendering and audio processing)
-   ```bash
-   # Ubuntu/Debian
-   sudo apt-get install ffmpeg
-   
-   # macOS
-   brew install ffmpeg
-   
-   # Windows
-   # Download from https://ffmpeg.org/download.html
-   ```
+2. **FFmpeg** (required for MP3/M4A decoding and audio processing)
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install ffmpeg
+
+# macOS
+brew install ffmpeg
+ 
+# Windows
+# Download from https://ffmpeg.org/download.html
+```
 
 ### Setup
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/SaltProphet/NeuralWorkstation.git
    cd NeuralWorkstation
    ```
 
 2. **Install Python dependencies**:
+
    ```bash
-   pip install -r requirements.txt
-   ```
+  pip install -r requirements.txt
+  ```
 
 3. **Optional: Install AudioSep** (for advanced query-based separation):
-   ```bash
-   pip install audiosep
-   # Note: Requires model checkpoints and GPU recommended
-   ```
-   
-   See [OPTIONAL_FEATURES_GUIDE.md](OPTIONAL_FEATURES_GUIDE.md) for detailed instructions on enabling and using optional features.
+
+  ```bash
+  pip install audiosep
+  # Note: Requires model checkpoints and GPU recommended
+  ```
+
+  See [OPTIONAL_FEATURES_GUIDE.md](OPTIONAL_FEATURES_GUIDE.md) for detailed instructions on enabling and using optional features.
 
 ## Usage
 
 ### Launch the Application
 
 ```bash
-python forgev1.py
+python app.py
 ```
 
 The Gradio interface will launch at `http://localhost:7860` (or `http://0.0.0.0:7860`).
@@ -176,15 +183,7 @@ The Gradio interface will launch at `http://localhost:7860` (or `http://0.0.0.0:
    - Click "Extract One-Shots"
    - Individual hits saved in `output/drums/`
 
-6. **Video Rendering**:
-   - Navigate to "Phase 3: Video" tab
-   - Upload audio file
-   - Select aspect ratio (16:9 for YouTube, 1:1 for Instagram, 9:16 for TikTok)
-   - Choose visualization type
-   - Click "Render Video"
-   - Video saved in `output/videos/`
-
-7. **Provide Feedback**:
+6. **Provide Feedback**:
    - Navigate to "Feedback" tab
    - Select feature and provide rating
    - Share your thoughts in comments
@@ -193,9 +192,9 @@ The Gradio interface will launch at `http://localhost:7860` (or `http://0.0.0.0:
 
 ## Directory Structure
 
-```
+```text
 NeuralWorkstation/
-├── forgev1.py          # Main application
+├── app.py             # Main application
 ├── requirements.txt    # Python dependencies
 ├── README.md          # This file
 ├── runs/              # Processing runs metadata
@@ -208,8 +207,7 @@ NeuralWorkstation/
     ├── loops/         # Extracted loops
     ├── chops/         # Vocal chops
     ├── midi/          # MIDI files
-    ├── drums/         # Drum one-shots
-    └── videos/        # Rendered videos
+    └── drums/         # Drum one-shots
 ```
 
 ## Configuration
@@ -235,46 +233,43 @@ This innovative control allows you to find different types of loops from the sam
 ## Tips & Best Practices
 
 ### Audio Quality
+
 - Use high-quality source audio (WAV, FLAC preferred over MP3)
 - Sample rate: 44.1kHz or 48kHz recommended
 - Avoid heavily compressed or low-bitrate files
 
-### Loop Generation
+### Loop Generation Tips
+
 - For 4-bar loops at 120 BPM: use 8-second duration
 - For 2-bar loops at 120 BPM: use 4-second duration
 - Experiment with Aperture to find different loop types
 - Process stems individually for genre-specific loops
 
 ### Vocal Chops
+
 - Use the separated vocals stem for cleanest results
 - **Onset** mode works best for rap and rhythmic vocals
 - **Silence** mode works best for sung, sustained vocals
 - **Hybrid** mode for mixed vocal styles
 
 ### Drum One-Shots
+
 - Process the separated drums stem for cleanest hits
 - Lower max_duration for tighter one-shots
 - Use extracted hits in your drum racks/samplers
-
-### Video Rendering
-- Choose aspect ratio based on target platform:
-  - YouTube: 16:9
-  - Instagram Feed: 1:1
-  - Instagram Stories/TikTok: 9:16
-  - Professional: 16:9 or 4:3
-- **Waveform**: Classic look, works for all genres
-- **Spectrum**: Modern look, great for electronic music
-- **Both**: Most informative, uses more screen space
 
 ## Troubleshooting
 
 ### Common Issues
 
 #### "Could not get API info" or "No API found" Error
+
 This is a known Gradio 5.x compatibility issue. **Fix:** The latest version includes `ssr_mode=False` in the launch configuration. If you still see this error, ensure you're using the latest version or see [TROUBLESHOOTING.md](TROUBLESHOOTING.md#api--gradio-issues) for manual fix instructions.
 
 #### FFmpeg Not Found
+
 Ensure FFmpeg is installed and in your PATH:
+
 ```bash
 # Check if installed
 ffmpeg -version
@@ -284,6 +279,7 @@ sudo apt-get install ffmpeg
 ```
 
 #### Memory Issues
+
 - Process shorter audio files (under 5 minutes recommended)
 - Use lighter Demucs models (htdemucs instead of mdx_extra_q)
 - Close other applications to free RAM
@@ -291,6 +287,7 @@ sudo apt-get install ffmpeg
 ### More Help
 
 For comprehensive troubleshooting, see [**TROUBLESHOOTING.md**](TROUBLESHOOTING.md) which covers:
+
 - API and Gradio issues
 - Installation problems
 - Audio processing issues
@@ -298,17 +295,18 @@ For comprehensive troubleshooting, see [**TROUBLESHOOTING.md**](TROUBLESHOOTING.
 - Performance optimization
 
 For information about optional features:
+
 - [**OPTIONAL_FEATURES_GUIDE.md**](OPTIONAL_FEATURES_GUIDE.md) - Quick start guide for enabling AudioSep and other features
 - [**OPTIONAL_FEATURES_IMPLEMENTATION.md**](OPTIONAL_FEATURES_IMPLEMENTATION.md) - Technical implementation details
 
 ## Advanced Usage
 
-### Batch Processing
+### Batch Processing (Advanced)
 
 For processing multiple files, you can import and use the functions directly:
 
 ```python
-from forgev1 import separate_stems_demucs, extract_loops
+from app import separate_stems_demucs, extract_loops
 
 # Process multiple files
 audio_files = ['track1.wav', 'track2.wav', 'track3.wav']
@@ -328,7 +326,7 @@ for audio_file in audio_files:
 Save custom configurations:
 
 ```python
-from forgev1 import Config
+from app import Config
 
 config = {
     'default_model': 'htdemucs_ft',
@@ -360,6 +358,7 @@ MIT License - see LICENSE file for details
 ### Testing
 
 Run the test suite:
+
 ```bash
 # Install test dependencies
 pip install -r requirements-test.txt
@@ -375,9 +374,10 @@ pytest tests/unit/ -v          # Unit tests only
 pytest tests/integration/ -v   # Integration tests only
 ```
 
-### REST API
+### REST API (Development)
 
 Start the API server:
+
 ```bash
 # Install API dependencies
 pip install -r requirements-api.txt
@@ -392,6 +392,7 @@ uvicorn api:app --host 0.0.0.0 --port 8000
 Access API documentation at `http://localhost:8000/docs`
 
 Use the Python client:
+
 ```python
 from api_client_example import ForgeAPIClient
 
@@ -402,11 +403,13 @@ result = client.extract_loops("audio.wav", num_loops=5)
 ### Performance Optimization
 
 Run performance optimizations:
+
 ```bash
 python performance.py
 ```
 
 This will:
+
 - Clean expired cache files
 - Manage cache size limits
 - Display resource statistics
@@ -414,6 +417,7 @@ This will:
 ### CI/CD
 
 The project includes automated CI/CD with GitHub Actions:
+
 - Automated testing on multiple Python versions
 - Code linting and quality checks
 - Security scanning
@@ -422,6 +426,7 @@ The project includes automated CI/CD with GitHub Actions:
 ### Pre-commit Hooks
 
 Install pre-commit hooks for automatic code quality checks:
+
 ```bash
 pip install pre-commit
 pre-commit install
@@ -431,6 +436,7 @@ pre-commit run --all-files
 ## Support
 
 For issues, questions, or feature requests:
+
 1. Check existing issues on GitHub
 2. Submit detailed bug reports with error messages
 3. Use the in-app feedback system
