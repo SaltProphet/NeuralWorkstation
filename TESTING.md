@@ -281,7 +281,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from forgev1 import function_to_test
+from app import function_to_test
 
 
 @pytest.mark.unit  # or integration, benchmark, etc.

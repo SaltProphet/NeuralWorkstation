@@ -389,15 +389,14 @@ if result.returncode != 0:
 
 ```
 NeuralWorkstation/
-├── forgev1.py          # Main application (add your code here)
+├── app.py              # Main application (add your code here)
 ├── requirements.txt    # Add dependencies here
 ├── output/
 │   ├── stems/         # Stem separation outputs
 │   ├── loops/         # Loop generation outputs
 │   ├── chops/         # Vocal chop outputs
 │   ├── midi/          # MIDI extraction outputs
-│   ├── drums/         # Drum one-shot outputs
-│   └── videos/        # Video rendering outputs
+│   └── drums/         # Drum one-shot outputs
 ├── cache/             # Cached Demucs results
 ├── feedback/          # User feedback JSON files
 └── config/            # Configuration JSON files
@@ -419,7 +418,7 @@ NeuralWorkstation/
 ---
 
 **Repository**: SaltProphet/NeuralWorkstation
-**Main File**: forgev1.py (1724 lines)
+**Main File**: app.py (unified entry point)
 **Status**: All features implemented, no placeholders
 ```
 

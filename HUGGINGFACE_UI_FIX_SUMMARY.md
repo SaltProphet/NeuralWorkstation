@@ -43,7 +43,7 @@ Upon investigation, I discovered that the application was incompatible with Grad
 ### Code Changes
 
 #### 1. Migrated to Gradio 6.x API
-**Files**: `forgev1.py`, `huggingface/forgev1.py`
+**Files**: `app.py`, `huggingface/app.py`
 
 - ✅ Moved `custom_css` → `CUSTOM_CSS` as module-level constant
 - ✅ Removed `theme` and `css` from `gr.Blocks()` constructor  
@@ -117,12 +117,11 @@ All tests passed successfully:
 To deploy to Hugging Face Spaces:
 
 1. **Upload files from `/huggingface/` folder**:
-   - `README.md` (must have `sdk_version: 6.0.0` in frontmatter)
-   - `app.py`
-   - `forgev1.py`
-   - `requirements.txt`
-   - `LICENSE`
-   - `.gitignore`
+  - `README.md` (must have `sdk_version: 6.0.0` in frontmatter)
+  - `app.py`
+  - `requirements.txt`
+  - `LICENSE`
+  - `.gitignore`
 
 2. **Verify README.md frontmatter**:
    ```yaml

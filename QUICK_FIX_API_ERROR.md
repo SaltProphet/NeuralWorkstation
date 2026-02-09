@@ -17,7 +17,7 @@ This is a Gradio 5.x compatibility issue. **The fix is already included in the l
    git pull origin main
    ```
 
-2. **Verify the fix is present** in your `forgev1.py` or `huggingface/forgev1.py`:
+2. **Verify the fix is present** in your `app.py` or `huggingface/app.py`:
    ```python
    app.launch(
        server_name="0.0.0.0",
@@ -29,8 +29,8 @@ This is a Gradio 5.x compatibility issue. **The fix is already included in the l
    ```
 
 3. **If the line is missing**, add it manually:
-   - Open `forgev1.py` (or `huggingface/forgev1.py` for Hugging Face deployment)
-   - Find the `app.launch()` call (around line 1463)
+   - Open `app.py` (or `huggingface/app.py` for Hugging Face deployment)
+   - Find the `app.launch()` call
    - Add `ssr_mode=False` as shown above
    - Save and restart the application
 

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**FORGE v1** is a comprehensive Neural Audio Workstation that combines audio processing, stem separation, loop extraction, vocal chopping, MIDI extraction, drum one-shot generation, and video rendering into a unified Gradio-based web interface.
+**FORGE v1** is a comprehensive Neural Audio Workstation that combines audio processing, stem separation, loop extraction, vocal chopping, MIDI extraction, and drum one-shot generation into a unified Gradio-based web interface.
 
 ## Tech Stack
 
@@ -12,14 +12,14 @@
 - **Deep Learning**: PyTorch, torchaudio
 - **Stem Separation**: Demucs 4.0+
 - **MIDI Extraction**: basic-pitch
-- **Video Processing**: FFmpeg (system dependency)
+- **Video Processing**: FFmpeg (system dependency, audio conversions only)
 - **Optional**: AudioSep (advanced query-based separation)
 
 ## Project Structure
 
 ```
 NeuralWorkstation/
-├── forgev1.py          # Main application - all logic in single file
+├── app.py             # Main application - all logic in single file
 ├── requirements.txt    # Python dependencies
 ├── README.md          # Comprehensive user documentation
 ├── LICENSE            # MIT License
@@ -35,7 +35,6 @@ NeuralWorkstation/
     ├── chops/         # Vocal chops
     ├── midi/          # MIDI files
     ├── drums/         # Drum one-shots
-    └── videos/        # Rendered videos
 ```
 
 ## Commands
@@ -52,7 +51,7 @@ pip install audiosep
 ### Running the Application
 ```bash
 # Launch Gradio interface (opens on http://localhost:7860)
-python forgev1.py
+python app.py
 ```
 
 ### Testing Audio Processing
@@ -123,10 +122,6 @@ def separate_stems_demucs(
 - **MIDI Extraction**: Uses basic_pitch
 - **Drum One-Shots**: Transient detection for individual hits
 
-### Phase 3: Video Rendering
-- **FFmpeg-Powered**: Multiple aspect ratios (16:9, 4:3, 1:1, 9:16)
-- **Visualization Types**: waveform, spectrum, or both
-
 ### Feedback System
 - JSON-based storage of user ratings and comments
 - Timestamped feedback files in `feedback/` directory
@@ -140,7 +135,7 @@ def separate_stems_demucs(
 - **README.md**: Only update if adding significant new features that change user workflow
 
 ### BE CAREFUL WITH
-- **forgev1.py**: This is a monolithic file (~1000+ lines). Make surgical changes only.
+- **app.py**: This is a monolithic file (~1000+ lines). Make surgical changes only.
 - **Demucs model names**: Must match official Demucs model identifiers
 - **Audio file handling**: Always check file existence before processing
 - **FFmpeg commands**: Ensure compatibility across platforms (Linux, macOS, Windows)
@@ -177,7 +172,7 @@ def separate_stems_demucs(
 6. Update README.md with feature documentation
 
 ### Modifying UI
-1. All UI is defined in the Gradio blocks at the bottom of `forgev1.py`
+1. All UI is defined in the Gradio blocks at the bottom of `app.py`
 2. Follow existing tab structure (Phase 1, 2, 3, Feedback)
 3. Use clear labels and help text for parameters
 4. Test with various audio files to ensure robustness

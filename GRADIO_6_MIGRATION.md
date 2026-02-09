@@ -54,8 +54,8 @@ gradio>=5.11.0
 
 ### 2. Migrated to Gradio 6.x API
 **Files Modified**:
-- `/forgev1.py`
-- `/huggingface/forgev1.py`
+- `/app.py`
+- `/huggingface/app.py`
 
 **Changes**:
 1. Moved `CUSTOM_CSS` from function-local variable to module-level constant
@@ -124,7 +124,6 @@ def main():
 1. **Upload files from `/huggingface/` folder**:
    - `README.md` (contains sdk_version: 6.0.0)
    - `app.py`
-   - `forgev1.py`
    - `requirements.txt`
    - `LICENSE`
    - `.gitignore`

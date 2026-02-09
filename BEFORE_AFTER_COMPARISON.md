@@ -3,7 +3,8 @@
 ## The Problem
 
 ### Before Fix
-```
+
+```text
 ❌ UI broken on Hugging Face Spaces
 ❌ Gradio 6.x blocked by version constraint
 ❌ theme/css parameters in wrong location (Blocks constructor)
@@ -24,7 +25,8 @@ NameError: name 'custom_css' is not defined
 ## The Solution
 
 ### After Fix
-```
+
+```text
 ✅ UI renders correctly on Hugging Face Spaces
 ✅ Gradio 6.x supported (6.4.0 tested)
 ✅ theme/css parameters in correct location (launch method)
@@ -47,7 +49,7 @@ gradio>=5.11.0,<6.0.0  # ❌ Blocks Gradio 6.x
 gradio>=5.11.0  # ✅ Allows Gradio 6.x
 ```
 
-### forgev1.py Structure
+### app.py Structure
 
 **Before:**
 ```python
@@ -123,7 +125,8 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 ## Test Results Comparison
 
 ### Before
-```
+
+```text
 ❌ UserWarning about deprecated parameters
 ❌ NameError for custom_css
 ❌ UI renders without styling
@@ -131,7 +134,8 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 ```
 
 ### After
-```
+
+```text
 ✅ Gradio version: 6.4.0
 ✅ CUSTOM_CSS loaded: 6684 characters
 ✅ Interface created: Blocks
@@ -149,6 +153,7 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 ## UI Appearance
 
 ### Before Fix (Broken)
+
 - Plain white/light background
 - No custom styling
 - Default Gradio theme
@@ -157,6 +162,7 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 - No orange accent colors
 
 ### After Fix (Working)
+
 - ✅ Dark background (#0a0a0a)
 - ✅ Orange accent color (#ff6b35)
 - ✅ Monospace Courier New font
@@ -170,7 +176,8 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 ## Deployment Process
 
 ### Before
-```
+
+```text
 1. Upload files
 2. Build starts
 3. ❌ Either fails or uses old Gradio
@@ -179,7 +186,8 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 ```
 
 ### After
-```
+
+```text
 1. Upload files from /huggingface/
 2. Build starts (3-5 minutes)
 3. ✅ Installs Gradio 6.x successfully
@@ -189,47 +197,51 @@ HUGGINGFACE_DEPLOYMENT.md: sdk_version: 6.0.0  # ✅
 
 ## Compatibility Matrix
 
-|                    | Before | After |
-|--------------------|--------|-------|
-| Gradio 5.11.0      | ✅     | ✅    |
-| Gradio 5.x         | ✅     | ✅    |
-| Gradio 6.0         | ❌     | ✅    |
-| Gradio 6.x         | ❌     | ✅    |
-| HF Spaces Deploy   | ❌     | ✅    |
-| Local Development  | ✅     | ✅    |
-| Docker Deploy      | ✅     | ✅    |
+| | Before | After |
+| --- | --- | --- |
+| Gradio 5.11.0 | ✅ | ✅ |
+| Gradio 5.x | ✅ | ✅ |
+| Gradio 6.0 | ❌ | ✅ |
+| Gradio 6.x | ❌ | ✅ |
+| HF Spaces Deploy | ❌ | ✅ |
+| Local Development | ✅ | ✅ |
+| Docker Deploy | ✅ | ✅ |
 
 ## Files Modified
 
 ### Code (2 files)
-- `forgev1.py` - Main application
-- `huggingface/forgev1.py` - HF-specific copy
+
+- `app.py` - Main application
+- `huggingface/app.py` - HF-specific copy
 
 ### Requirements (2 files)
+
 - `requirements.txt` - Python dependencies
 - `huggingface/requirements.txt` - HF-specific
 
 ### Documentation (4 files)
+
 - `HUGGINGFACE_DEPLOYMENT.md` - Main HF guide
 - `huggingface/DEPLOYMENT_GUIDE.md` - Detailed guide
 - `huggingface/FIXES.md` - Fix documentation
 - `huggingface/README.md` - HF Space README
 
 ### New Documentation (2 files)
+
 - `GRADIO_6_MIGRATION.md` - Technical migration guide
 - `HUGGINGFACE_UI_FIX_SUMMARY.md` - User summary
 
 ## Impact Summary
 
-| Metric              | Before | After | Change |
-|---------------------|--------|-------|--------|
-| Gradio Versions     | 5.x    | 5.x+6.x | +6.x support |
-| Build Success Rate  | ~50%   | ~99%  | +49% |
-| UI Render Success   | 0%     | 100%  | +100% |
-| Warnings            | 2      | 0     | -2 |
-| Errors              | 1      | 0     | -1 |
-| Documentation Issues| 3      | 0     | -3 |
-| Test Pass Rate      | 0%     | 100%  | +100% |
+| Metric | Before | After | Change |
+| --- | --- | --- | --- |
+| Gradio Versions | 5.x | 5.x+6.x | +6.x support |
+| Build Success Rate | ~50% | ~99% | +49% |
+| UI Render Success | 0% | 100% | +100% |
+| Warnings | 2 | 0 | -2 |
+| Errors | 1 | 0 | -1 |
+| Documentation Issues | 3 | 0 | -3 |
+| Test Pass Rate | 0% | 100% | +100% |
 
 ## Timeline
 

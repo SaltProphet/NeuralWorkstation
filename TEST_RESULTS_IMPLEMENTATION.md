@@ -79,7 +79,7 @@ Comprehensive testing infrastructure has been successfully implemented for FORGE
 
 | Module | Coverage | Notes |
 |--------|----------|-------|
-| forgev1.py | 26-31% | Main application (large file) |
+| app.py | 26-31% | Main application (large file) |
 | batch_processor.py | 66% | Batch operations |
 | performance.py | 78-90% | Performance optimization |
 | tests/* | 72-100% | Test infrastructure |

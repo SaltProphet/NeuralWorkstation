@@ -13,7 +13,7 @@ AudioSep is an optional feature that allows you to extract specific instruments 
 
 2. **Restart FORGE**:
    ```bash
-   python forgev1.py
+   python app.py
    ```
 
 3. **Verify Installation**:

@@ -57,8 +57,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Run the application
-python forgev1.py
-# OR
 python app.py
 
 # Access at http://localhost:7860
@@ -66,7 +64,7 @@ python app.py
 
 ### Configuration
 
-The application runs on `0.0.0.0:7860` by default. You can modify the launch settings in `forgev1.py` or `app.py`.
+The application runs on `0.0.0.0:7860` by default. You can modify the launch settings in `app.py`.
 
 ---
 
@@ -132,7 +130,6 @@ docker push yourusername/forge-v1:latest
    - **Python Version**: 3.10
 4. Upload files:
    - `app.py`
-   - `forgev1.py`
    - `requirements.txt`
    - `README.md`
 5. Add Space header to README.md:
@@ -159,7 +156,7 @@ git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
 cd YOUR_SPACE_NAME
 
 # Copy files
-cp app.py forgev1.py requirements.txt .
+cp app.py requirements.txt .
 
 # Add and commit
 git add .
@@ -438,7 +435,7 @@ pip install --upgrade -r requirements.txt
 
 #### "Port already in use"
 ```bash
-# Change port in forgev1.py or use environment variable
+# Change port in app.py or use environment variable
 export GRADIO_SERVER_PORT=7861
 ```
 
@@ -452,7 +449,7 @@ export GRADIO_SERVER_PORT=7861
 
 Enable debug logging:
 ```python
-# Add to forgev1.py or app.py
+# Add to app.py
 import logging
 logging.basicConfig(level=logging.DEBUG)
 ```

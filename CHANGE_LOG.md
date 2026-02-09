@@ -49,7 +49,7 @@ This release adds comprehensive enterprise features to FORGE v1, transforming it
 - `batch_processor.py` - Batch processing engine (11,503 bytes)
 
 **Modified Files:**
-- `forgev1.py` - Added "BATCH PROCESSING" UI tab (258 lines added)
+- `app.py` - Added "BATCH PROCESSING" UI tab (258 lines added)
 
 **Capabilities:**
 - Batch stem separation (Demucs)
@@ -242,7 +242,7 @@ uvicorn api:app --host 0.0.0.0 --port 8000
 
 ## 🔄 Modified Files
 
-### forgev1.py
+### app.py
 **Changes:**
 - Added batch processing UI tab (258 lines)
 - Imported batch processor functions

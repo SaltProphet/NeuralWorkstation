@@ -116,7 +116,7 @@ brew install ffmpeg
 
 2. **Install Python dependencies**:
 
-   ```bash
+I
   pip install -r requirements.txt
   ```
 

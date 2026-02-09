@@ -49,7 +49,7 @@ Added `huggingface/` folder with all necessary files optimized for HF Spaces dep
 - ✅ `huggingface/` - Complete deployment package folder
   - `README.md` - With HF Spaces frontmatter
   - `app.py` - Entry point
-  - `forgev1.py` - Main application
+  - `app.py` - Main application
   - `requirements.txt` - Optimized dependencies
   - `LICENSE` - MIT license
   - `.gitignore` - Exclude runtime files

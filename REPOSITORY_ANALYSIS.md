@@ -650,6 +650,6 @@ After implementation:
 
 *Analysis completed: 2026-02-03*
 *Repository: SaltProphet/NeuralWorkstation*
-*Main file: forgev1.py (1724 lines)*
+*Main file: app.py (unified entry point)*
 *Total functions analyzed: 17*
 *Placeholder functions found: 0*

@@ -18,7 +18,7 @@ Fully integrated the optional AudioSep feature with:
 ## Changes Overview
 
 ### Files Modified
-1. **forgev1.py** (3 sections modified)
+1. **app.py** (3 sections modified)
    - Added global `AUDIOSEP_AVAILABLE` flag (lines 38-47)
    - Enhanced `separate_stems_audiosep()` function (lines 247-302)
    - Completely rewrote AudioSep UI integration (lines 1178-1255)

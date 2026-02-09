@@ -8,7 +8,6 @@
 
 2. **Upload Files**
    - Upload `app.py` (main entry point)
-   - Upload `forgev1.py` (core application)
    - Upload `requirements.txt` (dependencies)
    - Upload `README.md` (documentation)
 
@@ -50,6 +49,7 @@ All dependencies in `requirements.txt` should work out of the box on Hugging Fac
 ## System Dependencies
 
 Hugging Face Spaces comes with:
+
 - ✅ FFmpeg (pre-installed)
 - ✅ Python 3.10+
 - ✅ CUDA (on GPU-enabled Spaces)
@@ -66,22 +66,26 @@ Hugging Face Spaces comes with:
 ### Build Timeout / numpy Building from Source
 
 If the deployment times out during numpy installation:
+
 - The repository has been updated to use pinned numpy versions with prebuilt wheels
 - Ensure you're using Python 3.10 or 3.11 (HF Spaces default)
 - The Dockerfile now upgrades pip first to ensure binary packages are used
 - If using direct requirements.txt (without Docker), pip should prefer binary packages
 
 ### Out of Memory
+
 - Use a GPU Space with more RAM
 - Process shorter audio clips
 - Disable AudioSep if enabled
 
 ### Slow Processing
+
 - Upgrade to a GPU Space
 - Use lighter Demucs models (htdemucs vs mdx_extra)
 - Enable caching for repeated operations
 
 ### Build Failures
+
 - Check that all dependencies in `requirements.txt` are compatible
 - Ensure `app.py` is set as the main file
 - Verify Python version compatibility (3.10+)
@@ -95,7 +99,6 @@ cd YOUR_SPACE_NAME
 
 # Copy files
 cp path/to/NeuralWorkstation/app.py .
-cp path/to/NeuralWorkstation/forgev1.py .
 cp path/to/NeuralWorkstation/requirements.txt .
 
 # Add README header for Spaces

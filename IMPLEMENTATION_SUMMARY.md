@@ -192,7 +192,7 @@ All tests passing:
 **Test Coverage:**
 - Total: 36% (1396 statements, 896 missed)
 - batch_processor.py: 66%
-- forgev1.py: 27%
+- app.py: 27%
 - tests/: 100%
 
 ## Updated Files
@@ -204,7 +204,7 @@ All tests passing:
 - Added development guidelines
 - Added performance optimization usage
 
-### forgev1.py
+### app.py
 - Added batch processing UI tab
 - Integrated batch operations
 - No breaking changes to existing functionality

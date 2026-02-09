@@ -23,13 +23,12 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 # Copy application files
-COPY forgev1.py .
 COPY app.py .
 COPY README.md .
 COPY LICENSE .
 
 # Create necessary directories
-RUN mkdir -p runs cache config checkpoint feedback output/stems output/loops output/chops output/midi output/drums output/videos
+RUN mkdir -p runs cache config checkpoint feedback output/stems output/loops output/chops output/midi output/drums
 
 # Expose Gradio default port
 EXPOSE 7860

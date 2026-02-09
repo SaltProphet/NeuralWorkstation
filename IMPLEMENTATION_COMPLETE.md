@@ -24,7 +24,7 @@ Fully functional AudioSep integration with:
 
 ## Technical Implementation
 
-### Code Changes (forgev1.py)
+### Code Changes (app.py)
 
 #### 1. Feature Detection (Lines 38-47)
 ```python
@@ -86,7 +86,7 @@ except ImportError:
 ## Statistics
 
 ### Files Changed: 6
-- `forgev1.py`: +175 lines, -31 lines (144 net additions)
+- `app.py`: +175 lines, -31 lines (144 net additions)
 - `README.md`: +6 lines
 - 4 new documentation files: +672 lines
 

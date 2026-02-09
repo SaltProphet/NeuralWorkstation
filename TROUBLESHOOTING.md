@@ -39,13 +39,13 @@ app.launch(
 ```
 
 **Status:** ✅ **FIXED** in the latest version
-- Main `forgev1.py` already includes this fix
-- Hugging Face deployment files (`huggingface/forgev1.py`) now include this fix
+- Main `app.py` already includes this fix
+- Hugging Face deployment files (`huggingface/app.py`) now include this fix
 - If you're still experiencing this issue, ensure you're using the latest version
 
 **Manual Fix (if needed):**
-1. Open `forgev1.py` or `huggingface/forgev1.py`
-2. Find the `app.launch()` call (around line 1463)
+1. Open `app.py` or `huggingface/app.py`
+2. Find the `app.launch()` call
 3. Add `ssr_mode=False` as shown above
 4. Restart the application
 
@@ -246,7 +246,7 @@ ffmpeg -i input.xxx -ar 44100 output.wav
 **Solution:**
 
 **Option 1: Change the port**
-Edit `forgev1.py`:
+Edit `app.py`:
 ```python
 app.launch(
     server_name="0.0.0.0",

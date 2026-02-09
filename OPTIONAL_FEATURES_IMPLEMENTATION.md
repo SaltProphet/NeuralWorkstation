@@ -8,7 +8,7 @@ This document describes the implementation of optional features in FORGE v1, spe
 
 ### 1. Feature Detection System
 
-Added a global feature detection system at startup (`forgev1.py` lines 38-47):
+Added a global feature detection system at startup (`app.py` lines 38-47):
 
 ```python
 # ============================================================================
