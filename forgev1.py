@@ -934,6 +934,7 @@ CUSTOM_CSS = """
         font-family: 'Courier New', monospace !important;
     }
     
+<<<<<<< HEAD
     .forge-subtitle {
         color: #888888 !important;
         font-size: 12px !important;
@@ -1138,6 +1139,129 @@ CUSTOM_CSS = """
     /* Remove default gradio margins */
     .gap {
         gap: 0 !important;
+=======
+    # Custom CSS for FORGE NEURAL WORKSTATION UI
+    custom_css = """
+    body, .gradio-container, .block, .tabs, .tabitem, .tab-nav, .gradio-app {
+        background: #181818 !important;
+        color: #f5f5f5 !important;
+        font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Consolas', monospace !important;
+    }
+    .forge-topbar {
+        background: #232323;
+        border-bottom: 2px solid #ff6600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 1.5rem 0.7rem 1.2rem;
+        font-family: 'Fira Mono', monospace;
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+    }
+    .forge-logo {
+        font-weight: bold;
+        color: #ff6600;
+        font-size: 1.3rem;
+        letter-spacing: 0.08em;
+    }
+    .forge-version {
+        color: #ffb366;
+        font-size: 1rem;
+        margin-left: 1.2rem;
+    }
+    .forge-status {
+        background: #232323;
+        color: #00ff99;
+        border: 1px solid #00ff99;
+        border-radius: 6px;
+        padding: 0.2rem 0.7rem;
+        font-size: 0.95rem;
+        margin-left: 1.5rem;
+    }
+    .forge-tabs .tab-nav button {
+        background: #232323 !important;
+        color: #ff6600 !important;
+        border-bottom: 3px solid transparent;
+        font-size: 1.08rem;
+        font-family: 'Fira Mono', monospace;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        border-radius: 0;
+        transition: border-bottom 0.2s;
+    }
+    .forge-tabs .tab-nav button.selected {
+        border-bottom: 3px solid #ff6600 !important;
+        color: #fff !important;
+        background: #181818 !important;
+    }
+    .forge-card {
+        background: #232323;
+        border: 1.5px solid #ff6600;
+        border-radius: 10px;
+        margin-bottom: 1.2rem;
+        padding: 1.2rem 1.5rem 1.2rem 1.5rem;
+        box-shadow: 0 2px 12px #000a;
+    }
+    .forge-card h2, .forge-card h3 {
+        color: #ff6600;
+        border-bottom: 2px solid #ff6600;
+        padding-bottom: 0.2rem;
+        margin-bottom: 1.1rem;
+        font-family: 'Fira Mono', monospace;
+        font-weight: 700;
+    }
+    .forge-console {
+        background: #181818;
+        border: 1.5px solid #444;
+        border-radius: 8px;
+        color: #00ff99;
+        font-size: 0.98rem;
+        font-family: 'Fira Mono', monospace;
+        padding: 0.7rem 1rem;
+        min-height: 180px;
+        max-height: 260px;
+        overflow-y: auto;
+        margin-bottom: 1.2rem;
+    }
+    .forge-session-output {
+        background: #232323;
+        border: 1.5px solid #ff6600;
+        border-radius: 8px;
+        color: #ffb366;
+        font-size: 1.01rem;
+        font-family: 'Fira Mono', monospace;
+        padding: 0.6rem 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        min-height: 60px;
+        max-width: 350px;
+        float: right;
+    }
+    .gradio-container .prose *, .gradio-container .prose {
+        color: #f5f5f5 !important;
+    }
+    .gradio-container .input, .gradio-container .output, .gradio-container .form, .gradio-container .form label {
+        color: #f5f5f5 !important;
+    }
+    .gradio-container input, .gradio-container textarea, .gradio-container select {
+        background: #232323 !important;
+        color: #ffb366 !important;
+        border: 1.5px solid #ff6600 !important;
+        border-radius: 6px !important;
+    }
+    .gradio-container button, .gradio-container .btn {
+        background: #ff6600 !important;
+        color: #fff !important;
+        border-radius: 6px !important;
+        font-family: 'Fira Mono', monospace;
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin-top: 0.3rem;
+    }
+    .gradio-container button:active, .gradio-container button.selected {
+        background: #ffb366 !important;
+        color: #232323 !important;
+>>>>>>> 1856546 (Enhance Gradio interface with custom CSS and improved layout for FORGE Neural Workstation)
     }
     
     /* Row spacing */
@@ -1156,6 +1280,7 @@ def create_gradio_interface():
     Create the main Gradio interface with FORGE Neural Workstation styling.
     Implements dark theme with orange accents, multi-phase tabs, and persistent console.
     """
+<<<<<<< HEAD
     
     with gr.Blocks(title="FORGE // NEURAL WORKSTATION") as app:
         
@@ -1222,10 +1347,51 @@ def create_gradio_interface():
                             except Exception as e:
                                 return {"error": str(e)}, f"❌ [ERROR] {str(e)}"
                         
+=======
+
+    with gr.Blocks(css=custom_css, title="FORGE v1 - Neural Audio Workstation") as app:
+        # Top bar
+        with gr.Row(elem_id="forge-topbar-row"):
+            gr.Markdown("""
+            <div class='forge-topbar'>
+                <span class='forge-logo'>FORGE // NEURAL WORKSTATION</span>
+                <span class='forge-version'>v1.0</span>
+                <span class='forge-status'>SYSTEM READY</span>
+            </div>
+            """, elem_classes=["forge-topbar"])
+
+        with gr.Row():
+            # Main content (left: tabs, right: console)
+            with gr.Column(scale=7):
+                with gr.Tabs(elem_classes=["forge-tabs"]):
+                    # ==================== PHASE 1: SOURCE ====================
+                    with gr.Tab("PHASE 1: SOURCE"):
+                        with gr.Column(elem_classes=["forge-card"]):
+                            gr.Markdown("""<h2>Audio Input & Stem Separation</h2>""")
+                            demucs_audio = gr.Audio(label="Upload Audio", type="filepath")
+                            demucs_model = gr.Dropdown(
+                                choices=Config.DEMUCS_MODELS,
+                                value='htdemucs',
+                                label="Demucs Model"
+                            )
+                            demucs_cache = gr.Checkbox(label="Use Cache", value=True)
+                            demucs_btn = gr.Button("ANALYZE & SEPARATE", elem_id="analyze-btn")
+                            demucs_output = gr.JSON(label="Separated Stems")
+                            demucs_status = gr.Textbox(label="Status", lines=3)
+                        def demucs_wrapper(audio, model, cache):
+                            if not audio:
+                                return {"error": "No audio uploaded"}, "No audio uploaded"
+                            try:
+                                result = separate_stems_demucs(audio, model, cache)
+                                return result, "Separation complete"
+                            except Exception as e:
+                                return {"error": str(e)}, str(e)
+>>>>>>> 1856546 (Enhance Gradio interface with custom CSS and improved layout for FORGE Neural Workstation)
                         demucs_btn.click(
                             fn=demucs_wrapper,
                             inputs=[demucs_audio, demucs_model, demucs_cache],
                             outputs=[demucs_output, demucs_status]
+<<<<<<< HEAD
                         )
                     
                     # ==================== PHASE 1.5: AUDIOSEP ====================
@@ -1341,10 +1507,61 @@ def create_gradio_interface():
                         
                         with gr.Row(elem_classes="forge-card"):
                             loop_num_loops = gr.Slider(
+=======
+                        )
+                    # ==================== PHASE 1.5: AUDIOSEP ====================
+                    with gr.Tab("PHASE 1.5: AUDIOSEP"):
+                        with gr.Column(elem_classes=["forge-card"]):
+                            gr.Markdown("""<h2>AudioSep Query Extraction</h2>""")
+                            audiosep_audio = gr.Audio(label="Upload Audio", type="filepath")
+                            audiosep_query = gr.Textbox(
+                                label="Query",
+                                placeholder="e.g., 'bass guitar', 'snare drum', 'piano'",
+                                value="bass guitar"
+                            )
+                            audiosep_btn = gr.Button("EXTRACT WITH AUDIOSEP")
+                            audiosep_output = gr.Audio(label="Separated Audio")
+                            audiosep_status = gr.Textbox(label="Status", lines=3)
+                        def audiosep_wrapper(audio, query):
+                            if not audio:
+                                return None, "No audio uploaded"
+                            try:
+                                result = separate_stems_audiosep(audio, query)
+                                return result, f"Extracted: {query}"
+                            except Exception as e:
+                                return None, str(e)
+                        audiosep_btn.click(
+                            fn=audiosep_wrapper,
+                            inputs=[audiosep_audio, audiosep_query],
+                            outputs=[audiosep_output, audiosep_status]
+                        )
+                    # ==================== PHASE 2: EXPORT ====================
+                    with gr.Tab("PHASE 2: EXPORT"):
+                        with gr.Column(elem_classes=["forge-card"]):
+                            gr.Markdown("""<h2>Stems Export, Loops, Video Render</h2>""")
+                            # Loop Extraction
+                            loop_audio = gr.Audio(label="Upload Audio", type="filepath")
+                            loop_duration = gr.Slider(
+                                minimum=1.0,
+                                maximum=16.0,
+                                value=4.0,
+                                step=0.5,
+                                label="Loop Duration (seconds)"
+                            )
+                            loop_aperture = gr.Slider(
+                                minimum=0.0,
+                                maximum=1.0,
+                                value=0.5,
+                                step=0.1,
+                                label="Aperture (0=Energy, 1=Spectral)"
+                            )
+                            loop_count = gr.Slider(
+>>>>>>> 1856546 (Enhance Gradio interface with custom CSS and improved layout for FORGE Neural Workstation)
                                 minimum=1,
                                 maximum=20,
                                 value=10,
                                 step=1,
+<<<<<<< HEAD
                                 label="Number of Loops to Extract"
                             )
                         
@@ -1904,10 +2121,121 @@ def create_gradio_interface():
                         show_label=False
                     )
         
+=======
+                                label="Number of Loops"
+                            )
+                            loop_btn = gr.Button("EXTRACT LOOPS")
+                            loop_output = gr.JSON(label="Generated Loops")
+                            loop_status = gr.Textbox(label="Status", lines=3)
+                            def loop_wrapper(audio, duration, aperture, count):
+                                if not audio:
+                                    return {}, "No audio uploaded"
+                                try:
+                                    loops = extract_loops(audio, duration, aperture, int(count))
+                                    return loops, f"Extracted {len(loops)} loops"
+                                except Exception as e:
+                                    return {}, str(e)
+                            loop_btn.click(
+                                fn=loop_wrapper,
+                                inputs=[loop_audio, loop_duration, loop_aperture, loop_count],
+                                outputs=[loop_output, loop_status]
+                            )
+                            # Video Render
+                            video_audio = gr.Audio(label="Upload Audio for Video", type="filepath")
+                            video_aspect = gr.Dropdown(
+                                choices=list(Config.ASPECT_RATIOS.keys()),
+                                value='16:9',
+                                label="Aspect Ratio"
+                            )
+                            video_viz = gr.Radio(
+                                choices=['waveform', 'spectrum', 'both'],
+                                value='waveform',
+                                label="Visualization Type"
+                            )
+                            video_btn = gr.Button("RENDER VIDEO")
+                            video_output = gr.Video(label="Rendered Video")
+                            video_status = gr.Textbox(label="Status", lines=3)
+                            def video_wrapper(audio, aspect, viz):
+                                if not audio:
+                                    return None, "No audio uploaded"
+                                try:
+                                    video_file = render_video(audio, aspect, viz)
+                                    return video_file, f"Video rendered: {Path(video_file).name}"
+                                except Exception as e:
+                                    return None, str(e)
+                            video_btn.click(
+                                fn=video_wrapper,
+                                inputs=[video_audio, video_aspect, video_viz],
+                                outputs=[video_output, video_status]
+                            )
+                    # ==================== PHASE 3: DOWNLOAD ====================
+                    with gr.Tab("PHASE 3: DOWNLOAD"):
+                        with gr.Column(elem_classes=["forge-card"]):
+                            gr.Markdown("""<h2>Session Results & Downloads</h2>""")
+                            # Placeholder for download tiles (implement as needed)
+                            gr.Markdown("<div style='color:#ffb366;'>Your processed files will appear here for download.</div>")
+                    # ==================== PHASE 4: FEEDBACK ====================
+                    with gr.Tab("PHASE 4: FEEDBACK"):
+                        with gr.Column(elem_classes=["forge-card"]):
+                            gr.Markdown("""<h2>Feedback & Contact</h2>""")
+                            feedback_feature = gr.Dropdown(
+                                choices=[
+                                    'Stem Separation',
+                                    'Loop Generation',
+                                    'Vocal Chops',
+                                    'MIDI Extraction',
+                                    'Drum One-Shots',
+                                    'Video Rendering',
+                                    'Overall Experience',
+                                    'Aperture Control',
+                                    'Other'
+                                ],
+                                label="Feature",
+                                value='Overall Experience'
+                            )
+                            feedback_rating = gr.Slider(
+                                minimum=1,
+                                maximum=5,
+                                value=5,
+                                step=1,
+                                label="Rating (1-5 stars)"
+                            )
+                            feedback_comments = gr.Textbox(
+                                label="Comments",
+                                placeholder="Share your thoughts, suggestions, or issues...",
+                                lines=5
+                            )
+                            feedback_email = gr.Textbox(
+                                label="Email (optional)",
+                                placeholder="your@email.com"
+                            )
+                            feedback_btn = gr.Button("SUBMIT FEEDBACK")
+                            feedback_status = gr.Textbox(label="Status", lines=5)
+                            feedback_btn.click(
+                                fn=save_feedback,
+                                inputs=[feedback_feature, feedback_rating, feedback_comments, feedback_email],
+                                outputs=[feedback_status]
+                            )
+            # End Tabs
+            with gr.Column(scale=3):
+                # Persistent right-side console panel
+                gr.Markdown("""
+                <div class='forge-console'>
+                <b>System Console</b><br>
+                <span style='color:#ffb366;'>[Console output and logs will appear here]</span>
+                </div>
+                """, elem_classes=["forge-console"])
+                # Session output tile
+                gr.Markdown("""
+                <div class='forge-session-output'>
+                <b>Session Output</b><br>
+                <span style='color:#ffb366;'>[Session summary, status, or quick links]</span>
+                </div>
+                """, elem_classes=["forge-session-output"])
+>>>>>>> 1856546 (Enhance Gradio interface with custom CSS and improved layout for FORGE Neural Workstation)
         # Footer
         gr.Markdown("---")
-        gr.Markdown("*FORGE v1 - Neural Audio Workstation | Built with ❤️ by NeuralWorkstation Team*")
-    
+        gr.Markdown("<span style='color:#ff6600;'>FORGE v1 - Neural Audio Workstation</span> | <span style='color:#ffb366;'>Built by NeuralWorkstation Team</span>")
     return app
 
 
