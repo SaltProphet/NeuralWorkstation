@@ -11,33 +11,51 @@ This prompt is provided as a template for future feature additions.
 ## Implementation Prompt for GitHub Copilot
 
 ```markdown
+
 # Context: FORGE v1 Neural Audio Workstation
 
 ## Project Overview
 You are working on FORGE v1, a comprehensive audio processing workstation that combines:
+
 - Demucs stem separation with intelligent caching
+
 - AudioSep query-based extraction (optional)
+
 - AI-powered loop generation with "Aperture" control
+
 - Vocal chop generator (3 modes: silence, onset, hybrid)
+
 - MIDI extraction with basic_pitch
+
 - Drum one-shot generator
+
 - FFmpeg video rendering with visualizations
+
 - User feedback system
 
 ## Technology Stack
+
 - **Language**: Python 3.8+
+
 - **UI**: Gradio 5.11.0+
+
 - **Audio**: librosa, soundfile, scipy, numpy
+
 - **Deep Learning**: PyTorch, torchaudio
+
 - **Stem Separation**: Demucs 4.0+
+
 - **MIDI**: basic-pitch
+
 - **Video**: FFmpeg (system dependency)
+
 - **Optional**: AudioSep
 
 ## Code Style Requirements
 
 ### 1. Function Signatures
 Always include type hints and Gradio progress:
+
 ```python
 def function_name(
     audio_path: str,
@@ -45,10 +63,12 @@ def function_name(
     param2: str = 'default',
     progress=gr.Progress()
 ) -> Dict[str, str]:
-```
+
+```python
 
 ### 2. Docstrings
 Follow this exact format:
+
 ```python
 """
 Brief one-line description of what function does.
@@ -62,10 +82,12 @@ Args:
 Returns:
     Description of return value with type
 """
-```
+
+```python
 
 ### 3. Audio Loading Pattern
 Always use this pattern:
+
 ```python
 try:
     progress(0, desc="Loading audio...")
@@ -74,20 +96,25 @@ try:
     # ... processing ...
 except Exception as e:
     raise RuntimeError(f"Operation failed: {str(e)}\\n{traceback.format_exc()}")
-```
+
+```python
 
 ### 4. Progress Reporting
 Report at these stages:
+
 ```python
 progress(0.0, desc="Initializing...")      # Start
 progress(0.3, desc="Loading audio...")     # Loading
 progress(0.5, desc="Processing...")        # Main work
 progress(0.8, desc="Saving results...")    # Output
 progress(1.0, desc="Complete!")            # Done
-```
+
+```python
 
 ### 5. File Output Pattern
+
 ```python
+
 # Always use Config output directories
 output_dir = Config.OUTPUT_DIR_[TYPE]  # STEMS, LOOPS, CHOPS, MIDI, DRUMS, VIDEOS
 audio_name = Path(audio_path).stem
@@ -100,10 +127,12 @@ output_path = output_dir / f"{audio_name}_{safe_name}.wav"
 # Write audio
 sf.write(output_path, audio_data, sr)
 return str(output_path)
-```
+
+```python
 
 ### 6. Error Handling
 Always provide detailed, actionable errors:
+
 ```python
 try:
     # ... code ...
@@ -123,11 +152,13 @@ except Exception as e:
         f"- Verify sufficient disk space\\n"
         f"\\nFull traceback:\\n{traceback.format_exc()}"
     )
-```
+
+```python
 
 ## Audio Processing Patterns
 
 ### Pattern 1: Feature Extraction
+
 ```python
 def extract_feature(audio_path: str, progress=gr.Progress()) -> List[str]:
     try:
@@ -157,9 +188,11 @@ def extract_feature(audio_path: str, progress=gr.Progress()) -> List[str]:
         
     except Exception as e:
         raise RuntimeError(f"Feature extraction failed: {str(e)}\\n{traceback.format_exc()}")
-```
+
+```python
 
 ### Pattern 2: Audio Transformation
+
 ```python
 def transform_audio(
     audio_path: str,
@@ -185,9 +218,11 @@ def transform_audio(
         
     except Exception as e:
         raise RuntimeError(f"Transformation failed: {str(e)}\\n{traceback.format_exc()}")
-```
+
+```python
 
 ### Pattern 3: Multi-File Processing
+
 ```python
 def process_multiple(
     audio_paths: List[str],
@@ -209,11 +244,13 @@ def process_multiple(
         
     except Exception as e:
         raise RuntimeError(f"Batch processing failed: {str(e)}\\n{traceback.format_exc()}")
-```
+
+```python
 
 ## Gradio UI Patterns
 
 ### Pattern 1: Simple Tab with Upload
+
 ```python
 with gr.Tab("Feature Name"):
     gr.Markdown("## Feature Description")
@@ -233,9 +270,11 @@ with gr.Tab("Feature Name"):
         inputs=[audio_input, param1],
         outputs=[audio_output, status]
     )
-```
+
+```python
 
 ### Pattern 2: Optional Feature Tab
+
 ```python
 with gr.Tab("Optional Feature"):
     # Conditional status message
@@ -270,11 +309,13 @@ with gr.Tab("Optional Feature"):
         return process_function(audio)
     
     process_btn.click(fn=wrapper, inputs=[audio_input], outputs=[audio_output, status])
-```
+
+```python
 
 ## Configuration
 
 ### Add to Config class:
+
 ```python
 class Config:
     # Add new constants
@@ -282,31 +323,49 @@ class Config:
     NEW_OUTPUT_DIR = Path('output/new_feature')
     
     # Add to output directories list in setup_directories()
-```
+
+```python
 
 ## Testing Checklist
 
 After implementing a feature:
+
 - [ ] Test with WAV file (48kHz, 16-bit)
+
 - [ ] Test with MP3 file (320kbps)
+
 - [ ] Test with FLAC file
+
 - [ ] Test with short audio (< 10 seconds)
+
 - [ ] Test with long audio (> 3 minutes)
+
 - [ ] Test error handling (missing file)
+
 - [ ] Test error handling (corrupted file)
+
 - [ ] Test progress updates appear in UI
+
 - [ ] Verify output files are created
+
 - [ ] Check output files play correctly
+
 - [ ] Test with non-ASCII filenames
+
 - [ ] Test with special characters in filename
 
 ## Security Checklist
 
 - [ ] All user inputs sanitized before filesystem operations
+
 - [ ] No shell injection vulnerabilities in subprocess calls
+
 - [ ] Input validation prevents path traversal (../)
+
 - [ ] File size limits enforced
+
 - [ ] Proper exception handling (no broad except:)
+
 - [ ] No sensitive information in error messages
 
 ## Examples from Existing Code
@@ -320,10 +379,15 @@ After implementing a feature:
 6. **`save_feedback()`** - JSON storage, timestamp handling
 
 ### UI Component Examples:
+
 - Phase 1 tab: Model selection dropdown
+
 - Phase 1.5 tab: Optional feature with conditional UI
+
 - Phase 2 tabs: Parameter sliders and mode selection
+
 - Phase 3 tab: Aspect ratio and visualization type
+
 - Feedback tab: Rating system and text input
 
 ## Common Pitfalls to Avoid
@@ -355,39 +419,48 @@ After implementing a feature:
 ## Quick Command Reference
 
 ### Add to requirements.txt:
-```
+
+```python
 new-package>=1.0.0,<2.0.0
-```
+
+```python
 
 ### Import pattern:
+
 ```python
+
 # At top of file
 try:
     import optional_package
     PACKAGE_AVAILABLE = True
 except ImportError:
     PACKAGE_AVAILABLE = False
-```
+
+```python
 
 ### Add to setup_directories():
+
 ```python
 directories = [
     # ... existing ...
     'output/new_feature',
 ]
-```
+
+```python
 
 ### Subprocess pattern (e.g., FFmpeg):
+
 ```python
 cmd = ['program', '-arg1', 'value1', '-arg2', 'value2']
 result = subprocess.run(cmd, capture_output=True, text=True)
 if result.returncode != 0:
     raise RuntimeError(f"Command failed: {result.stderr}")
-```
+
+```python
 
 ## File Structure Reference
 
-```
+```python
 NeuralWorkstation/
 ├── app.py              # Main application (add your code here)
 ├── requirements.txt    # Add dependencies here
@@ -400,7 +473,8 @@ NeuralWorkstation/
 ├── cache/             # Cached Demucs results
 ├── feedback/          # User feedback JSON files
 └── config/            # Configuration JSON files
-```
+
+```python
 
 ## Final Notes
 
@@ -420,7 +494,8 @@ NeuralWorkstation/
 **Repository**: SaltProphet/NeuralWorkstation
 **Main File**: app.py (unified entry point)
 **Status**: All features implemented, no placeholders
-```
+
+```python
 
 ---
 
@@ -433,26 +508,37 @@ NeuralWorkstation/
 
 ### Example Usage
 
-```
+```python
 [Paste the prompt above]
 
 Now implement a "Tempo Detection" feature that:
+
 - Accepts an audio file
+
 - Uses librosa.beat.tempo() to detect BPM
+
 - Returns the detected tempo as a number
+
 - Displays result in Phase 2 tab
+
 - Follows all the patterns above
-```
+
+```python
 
 ---
 
 ## Important Notes
 
 - **No Placeholders Exist**: This repository has zero placeholder functions
+
 - **All Features Work**: Every function is fully implemented and tested
+
 - **Use This Template**: For adding NEW features in the future
+
 - **Follow Patterns**: Existing code is your best reference
+
 - **Security First**: Always sanitize user inputs
+
 - **Test Thoroughly**: Use the testing checklist provided
 
 ---

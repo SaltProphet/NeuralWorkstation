@@ -21,7 +21,7 @@ try:
     AUDIOSEP_AVAILABLE = True
 except ImportError:
     AUDIOSEP_AVAILABLE = False
-```
+```python
 
 **Purpose**: Detects whether optional dependencies are installed at runtime, allowing the app to gracefully handle missing features without crashing.
 
@@ -51,7 +51,7 @@ Key improvements:
 - **Validates inputs**: Checks both audio file and query before processing
 - **Shows results**: Displays extracted audio and status messages
 
-#### UI Components Added:
+#### UI Components Added
 
 1. **Availability Indicator**:
    - ✅ Green message when AudioSep is available
@@ -140,14 +140,14 @@ AudioSep supports natural language queries like:
 ### File Output
 
 Extracted audio is saved to:
-```
+```python
 output/stems/{original_filename}_audiosep_{query}.wav
-```
+```python
 
 Example:
-```
+```python
 output/stems/song_audiosep_bass_guitar.wav
-```
+```python
 
 ## Testing
 

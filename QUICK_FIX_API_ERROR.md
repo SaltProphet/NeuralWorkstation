@@ -1,9 +1,13 @@
 # Quick Fix: "No API Found" Error
 
 ## Problem
+
 When running FORGE v1, you see one of these errors:
+
 - "Could not get API info"
+
 - "No API found"
+
 - Gradio interface fails to load
 
 ## Solution
@@ -13,12 +17,17 @@ This is a Gradio 5.x compatibility issue. **The fix is already included in the l
 ### If You're Still Experiencing This Issue
 
 1. **Update to the latest version:**
-   ```bash
+
+```bash
+
    git pull origin main
-   ```
+
+```python
 
 2. **Verify the fix is present** in your `app.py` or `huggingface/app.py`:
-   ```python
+
+```python
+
    app.launch(
        server_name="0.0.0.0",
        server_port=7860,
@@ -26,7 +35,8 @@ This is a Gradio 5.x compatibility issue. **The fix is already included in the l
        show_error=True,
        ssr_mode=False  # ← This line should be present
    )
-   ```
+
+```python
 
 3. **If the line is missing**, add it manually:
    - Open `app.py` (or `huggingface/app.py` for Hugging Face deployment)
@@ -45,6 +55,9 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for comprehensive troubleshooting i
 ## Quick Links
 
 - [Full Documentation](README.md)
+
 - [Troubleshooting Guide](TROUBLESHOOTING.md)
+
 - [Deployment Guide](DEPLOYMENT.md)
+
 - [Hugging Face Deployment](HUGGINGFACE_DEPLOYMENT.md)
