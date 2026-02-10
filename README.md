@@ -114,18 +114,18 @@ brew install ffmpeg
    cd NeuralWorkstation
    ```
 
-1. **Install Python dependencies**:
+2. **Install Python dependencies**:
 
-  ```bash
-  pip install -r requirements.txt
-  ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1. **Optional: Install AudioSep** (for advanced query-based separation):
+3. **Optional: Install AudioSep** (for advanced query-based separation):
 
-  ```bash
-  pip install audiosep
-  # Note: Requires model checkpoints and GPU recommended
-  ```
+   ```bash
+   pip install audiosep
+   # Note: Requires model checkpoints and GPU recommended
+   ```
 
   See [OPTIONAL_FEATURES_GUIDE.md](OPTIONAL_FEATURES_GUIDE.md) for detailed instructions on enabling and using optional features.
 
