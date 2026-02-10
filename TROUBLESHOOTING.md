@@ -4,11 +4,11 @@ This guide covers common issues and their solutions for FORGE v1 Neural Audio Wo
 
 ## Table of Contents
 
-1. [API / Gradio Issues](#api--gradio-issues)
-2. [Installation Issues](#installation-issues)
-3. [Audio Processing Issues](#audio-processing-issues)
-4. [Deployment Issues](#deployment-issues)
-5. [Performance Issues](#performance-issues)
+1. API / Gradio Issues
+2. Installation Issues
+3. Audio Processing Issues
+4. Deployment Issues
+5. Performance Issues
 
 ---
 

@@ -29,12 +29,15 @@ All requested features have been successfully implemented and tested:
 **Usage:**
 ```bash
 # Run all tests
+
 pytest tests/ -v
 
 # Run with coverage
+
 pytest tests/ -v --cov=. --cov-report=html
 
 # Run specific test categories
+
 pytest tests/unit/ -v
 pytest tests/integration/ -v
 ```
@@ -96,9 +99,11 @@ result = batch_extract_loops(
 **Usage:**
 ```bash
 # Run optimization CLI
+
 python performance.py
 
 # Use in code
+
 from performance import CacheManager
 manager = CacheManager()
 stats = manager.get_cache_stats()
@@ -134,14 +139,17 @@ stats = manager.get_cache_stats()
 **Usage:**
 ```bash
 # Start API server
+
 python api.py
 # or
+
 uvicorn api:app --host 0.0.0.0 --port 8000
 
 # Access documentation
 # http://localhost:8000/docs
 
 # Use Python client
+
 from api_client_example import ForgeAPIClient
 client = ForgeAPIClient()
 result = client.extract_loops("audio.wav")
@@ -173,13 +181,16 @@ result = client.extract_loops("audio.wav")
 **Usage:**
 ```bash
 # Install pre-commit hooks
+
 pip install pre-commit
 pre-commit install
 
 # Run hooks manually
+
 pre-commit run --all-files
 
 # CI/CD runs automatically on push/PR
+
 ```
 
 ## Testing Results
@@ -198,6 +209,7 @@ All tests passing:
 ## Updated Files
 
 ### README.md
+
 - Added documentation for all new features
 - Added testing instructions
 - Added API documentation
@@ -205,11 +217,13 @@ All tests passing:
 - Added performance optimization usage
 
 ### app.py
+
 - Added batch processing UI tab
 - Integrated batch operations
 - No breaking changes to existing functionality
 
 ### .gitignore
+
 - Added test artifacts exclusions
 - Added coverage report exclusions
 

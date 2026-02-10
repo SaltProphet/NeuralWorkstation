@@ -4,25 +4,16 @@ This guide covers deployment of FORGE v1 Neural Audio Workstation to various pla
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-
-2. [Local Development](#local-development)
-
-3. [Docker Deployment](#docker-deployment)
-
-4. [Hugging Face Spaces](#hugging-face-spaces)
-
-5. [Vercel](#vercel)
-
-6. [Render](#render)
-
-7. [Flyio Deployment](#flyio-deployment)
-
-8. [Heroku](#heroku)
-
-9. [GitHub Pages](#github-pages)
-
-10. [Troubleshooting](#troubleshooting)
+1. Prerequisites
+2. Local Development
+3. Docker Deployment
+4. Hugging Face Spaces
+5. Vercel
+6. Render
+7. Flyio Deployment
+8. Heroku
+9. GitHub Pages
+10. Troubleshooting
 
 ---
 

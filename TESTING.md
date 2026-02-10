@@ -4,21 +4,14 @@ This document describes the comprehensive testing infrastructure for FORGE v1 Ne
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-
-- [Test Structure](#test-structure)
-
-- [Running Tests](#running-tests)
-
-- [Test Categories](#test-categories)
-
-- [Performance Benchmarks](#performance-benchmarks)
-
-- [Writing Tests](#writing-tests)
-
-- [Continuous Integration](#continuous-integration)
-
-- [Coverage Reports](#coverage-reports)
+- Quick Start
+- Test Structure
+- Running Tests  
+- Test Categories
+- Performance Benchmarks
+- Writing Tests
+- Continuous Integration
+- Coverage Reports
 
 ## Quick Start
 
